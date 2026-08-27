@@ -52,11 +52,12 @@ enum Lang {
 
 fn main() -> Result<()> {
     tracing_subscriber::fmt()
+        .with_writer(std::io::stdout)
         .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+                tracing_subscriber::EnvFilter::new(tracing::Level::INFO.as_str())
+            }),
         )
-        .with_writer(std::io::stderr)
         .init();
     tracing::debug!("tracing initialized");
 
