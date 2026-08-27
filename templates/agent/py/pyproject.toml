@@ -1,0 +1,9 @@
+[project]
+name = "{{PROJECT_NAME}}-agent"
+version = "0.1.0"
+description = "MCP server bridging an LLM to Soroban AgentPay"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp>=1.9.0",
+  "stellar-sdk>=12.1.0",
+]
