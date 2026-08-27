@@ -10,7 +10,7 @@ mod scaffold;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
@@ -77,12 +77,16 @@ fn cmd_init(project_name: &str, lang: Lang) -> Result<()> {
     match lang {
         Lang::Ts => {
             eprintln!("  agent/                          TypeScript MCP server");
-            eprintln!("Next: cd {project_name} && stellar contract build --manifest-path contracts/agent_pay_integration/Cargo.toml");
+            eprintln!(
+                "Next: cd {project_name} && stellar contract build --manifest-path contracts/agent_pay_integration/Cargo.toml"
+            );
             eprintln!("      cd agent && npm install && npx tsx src/index.ts");
         }
         Lang::Py => {
             eprintln!("  agent/                          Python MCP server");
-            eprintln!("Next: cd {project_name} && stellar contract build --manifest-path contracts/agent_pay_integration/Cargo.toml");
+            eprintln!(
+                "Next: cd {project_name} && stellar contract build --manifest-path contracts/agent_pay_integration/Cargo.toml"
+            );
             eprintln!("      cd agent && uv sync && uv run python src/server.py");
         }
     }

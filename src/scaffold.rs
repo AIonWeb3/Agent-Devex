@@ -54,7 +54,10 @@ fn write_agent_ts(root: &Path, project_name: &str) -> Result<()> {
     let agent = root.join("agent");
     write_file(
         &agent.join("package.json"),
-        &subst(include_str!("../templates/agent/ts/package.json"), project_name),
+        &subst(
+            include_str!("../templates/agent/ts/package.json"),
+            project_name,
+        ),
     )?;
     write_file(
         &agent.join("tsconfig.json"),
@@ -62,7 +65,10 @@ fn write_agent_ts(root: &Path, project_name: &str) -> Result<()> {
     )?;
     write_file(
         &agent.join("README.md"),
-        &subst(include_str!("../templates/agent/ts/README.md"), project_name),
+        &subst(
+            include_str!("../templates/agent/ts/README.md"),
+            project_name,
+        ),
     )?;
     write_file(
         &agent.join("src").join("index.ts"),
@@ -82,7 +88,10 @@ fn write_agent_py(root: &Path, project_name: &str) -> Result<()> {
     )?;
     write_file(
         &agent.join("README.md"),
-        &subst(include_str!("../templates/agent/py/README.md"), project_name),
+        &subst(
+            include_str!("../templates/agent/py/README.md"),
+            project_name,
+        ),
     )?;
     write_file(
         &agent.join("src").join("server.py"),
