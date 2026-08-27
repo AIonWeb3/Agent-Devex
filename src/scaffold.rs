@@ -7,16 +7,16 @@ use std::fs;
 use std::path::Path;
 
 use crate::Lang;
-use crate::error::Error;
+use crate::errors::AgentDevexError;
 
-fn write_file(path: &Path, contents: &str) -> Result<(), Error> {
+fn write_file(path: &Path, contents: &str) -> Result<(), AgentDevexError> {
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent).map_err(|source| Error::Io {
+        fs::create_dir_all(parent).map_err(|source| AgentDevexError::IoError {
             path: parent.to_path_buf(),
             source,
         })?;
     }
-    fs::write(path, contents).map_err(|source| Error::Io {
+    fs::write(path, contents).map_err(|source| AgentDevexError::IoError {
         path: path.to_path_buf(),
         source,
     })
@@ -26,7 +26,7 @@ fn subst(template: &str, project_name: &str) -> String {
     template.replace("{{PROJECT_NAME}}", project_name)
 }
 
-pub fn write_project(root: &Path, project_name: &str, lang: Lang) -> Result<(), Error> {
+pub fn write_project(root: &Path, project_name: &str, lang: Lang) -> Result<(), AgentDevexError> {
     write_file(
         &root.join("README.md"),
         &subst(include_str!("../templates/project/README.md"), project_name),
@@ -55,7 +55,7 @@ pub fn write_project(root: &Path, project_name: &str, lang: Lang) -> Result<(), 
     Ok(())
 }
 
-fn write_agent_ts(root: &Path, project_name: &str) -> Result<(), Error> {
+fn write_agent_ts(root: &Path, project_name: &str) -> Result<(), AgentDevexError> {
     let agent = root.join("agent");
     write_file(
         &agent.join("package.json"),
@@ -82,7 +82,7 @@ fn write_agent_ts(root: &Path, project_name: &str) -> Result<(), Error> {
     Ok(())
 }
 
-fn write_agent_py(root: &Path, project_name: &str) -> Result<(), Error> {
+fn write_agent_py(root: &Path, project_name: &str) -> Result<(), AgentDevexError> {
     let agent = root.join("agent");
     write_file(
         &agent.join("pyproject.toml"),

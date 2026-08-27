@@ -5,7 +5,7 @@
 //! files instead of giant string literals in Rust. At `init` time we write those bytes
 //! (with `{{PROJECT_NAME}}` substitution) via [`crate::scaffold`].
 
-mod error;
+mod errors;
 mod scaffold;
 
 use std::io::IsTerminal;
@@ -13,9 +13,9 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::Result;
-
-use crate::error::Error;
 use clap::{Parser, Subcommand, ValueEnum};
+
+use crate::errors::AgentDevexError;
 
 #[derive(Parser)]
 #[command(
@@ -94,14 +94,14 @@ fn cmd_init(project_name: &str, lang: Lang) -> Result<()> {
     if root.exists() {
         let empty = root
             .read_dir()
-            .map_err(|source| Error::ReadDir {
+            .map_err(|source| AgentDevexError::IoError {
                 path: root.clone(),
                 source,
             })?
             .next()
             .is_none();
         if !empty {
-            return Err(Error::DirectoryNotEmpty { path: root }.into());
+            return Err(AgentDevexError::DirectoryNotEmpty { path: root }.into());
         }
     }
 
@@ -131,7 +131,7 @@ fn cmd_init(project_name: &str, lang: Lang) -> Result<()> {
 fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
     let contract_dir = project_dir.join("contracts").join("agent_pay_integration");
     if !contract_dir.join("Cargo.toml").is_file() {
-        return Err(Error::MissingContractManifest {
+        return Err(AgentDevexError::ConfigNotFound {
             path: contract_dir.join("Cargo.toml"),
         }
         .into());
@@ -178,17 +178,17 @@ fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
     }
 }
 
-fn run_stellar(args: &[&str], cwd: &Path, label: &str) -> Result<(), Error> {
+fn run_stellar(args: &[&str], cwd: &Path, label: &str) -> Result<(), AgentDevexError> {
     let status = Command::new("stellar")
         .args(args)
         .current_dir(cwd)
         .status()
-        .map_err(|source| Error::StellarSpawn {
+        .map_err(|source| AgentDevexError::StellarSpawn {
             label: label.to_string(),
             source,
         })?;
     if !status.success() {
-        return Err(Error::StellarFailed {
+        return Err(AgentDevexError::StellarFailed {
             label: label.to_string(),
             status,
         });
@@ -196,18 +196,18 @@ fn run_stellar(args: &[&str], cwd: &Path, label: &str) -> Result<(), Error> {
     Ok(())
 }
 
-fn find_wasm(contract_dir: &Path) -> Result<PathBuf, Error> {
+fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
     let target = contract_dir.join("target").join("wasm32-unknown-unknown");
     let mut found = Vec::new();
     for profile in ["release", "debug"] {
         let dir = target.join(profile);
         if dir.is_dir() {
-            for entry in std::fs::read_dir(&dir).map_err(|source| Error::ReadDir {
+            for entry in std::fs::read_dir(&dir).map_err(|source| AgentDevexError::IoError {
                 path: dir.clone(),
                 source,
             })? {
                 let path = entry
-                    .map_err(|source| Error::ReadDir {
+                    .map_err(|source| AgentDevexError::IoError {
                         path: dir.clone(),
                         source,
                     })?
@@ -218,5 +218,8 @@ fn find_wasm(contract_dir: &Path) -> Result<PathBuf, Error> {
             }
         }
     }
-    found.into_iter().next().ok_or(Error::WasmNotFound)
+    found
+        .into_iter()
+        .next()
+        .ok_or(AgentDevexError::WasmNotFound)
 }
