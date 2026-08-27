@@ -2,10 +2,11 @@
 name = "agent-devex"
 version = "0.1.0"
 edition = "2024"
+authors = ["AIonWeb3"]
 description = "CLI to scaffold, test, and deploy AI-to-Web3 integrations on Stellar (Soroban + MCP)."
 license = "MIT"
 readme = "README.md"
 
 [dependencies]
 anyhow = "1"
-clap = { version = "4", features = ["derive"] }
+clap = { version = "4", features = ["derive", "cargo"] }

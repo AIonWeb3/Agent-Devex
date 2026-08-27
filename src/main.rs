@@ -14,7 +14,13 @@ use anyhow::{Context, Result, bail};
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
-#[command(name = "agent-devex", version, about)]
+#[command(
+    name = "agent-devex",
+    version,
+    author,
+    about,
+    long_about = None
+)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
