@@ -1,181 +1,360 @@
 # Agent-Devex
 
-CLI to scaffold, test, and deploy AI-to-Web3 integrations on Stellar: a Soroban contract
-pre-wired with AgentPay/AgentGuard interfaces and an MCP server stub (`settle_and_execute`).
+CLI for scaffolding AI-to-Web3 projects on Stellar: a Soroban contract pre-wired with AgentPay / AgentGuard interfaces, plus a Model Context Protocol (MCP) server so an LLM can call settle_and_execute and submit a signed contract invoke.
 
-```bash
-cargo run -- init my-agent --lang ts
-cargo run -- init my-agent --lang py
-cargo run -- deploy --project-dir my-agent --network testnet
-```
+LLM  →  MCP tool settle_and_execute  →  signed Soroban tx  →  execute_agent_action
+                                                      (AgentGuard → AgentPay.settle → state)
 
-Requires [stellar-cli](https://developers.stellar.org/docs/tools/developer-tools/cli/stellar-cli) on `PATH` for `deploy`. Set `STELLAR_ACCOUNT` to run deploy instead of printing the command.
+Requirements
 
 
-The repo currently contains only LICENSE. This plan adds a single Cargo binary crate plus embedded templates. No unpublished AgentPay crates exist, so the generated contract will define local AgentPay / AgentGuard interfaces (traits + types) that a later crate can replace.
 
-Layout
 
-Cargo.toml                 # clap, anyhow, thiserror (optional)
-src/main.rs                # clap CLI + command dispatch
-src/scaffold.rs            # mkdir + write template files
-templates/
-  contracts/agent_pay_integration/{Cargo.toml,src/lib.rs}
-  agent/ts/{package.json,tsconfig.json,src/index.ts,README.md}
-  agent/py/{pyproject.toml,src/server.py,README.md}
-  project/README.md        # generated root README
 
-init writes:
+Rust (stable; this crate uses edition 2024)
 
-<project-name>/
-  contracts/agent_pay_integration/
-  agent/                   # TS or Py MCP server
+
+
+For deploy: stellar-cli on PATH, plus the wasm32-unknown-unknown target
+
+
+
+For a generated TypeScript agent: Node.js and npm
+
+
+
+For a generated Python agent: Python 3.11+ and uv (or any installer that reads pyproject.toml)
+
+
+
+Install / run
+
+From this repository:
+
+cargo build --release
+cargo run -- --help
+
+Install the binary onto your PATH:
+
+cargo install --path .
+agent-devex --help
+
+
+
+Commands
+
+
+
+init
+
+Create a monorepo. The target directory must not exist, or must be empty.
+
+agent-devex init my-agent --lang ts   # TypeScript MCP server
+agent-devex init my-agent --lang py   # Python MCP server
+
+Layout:
+
+my-agent/
   README.md
+  contracts/agent_pay_integration/   # Soroban crate (cdylib)
+  agent/                             # MCP stdio server
 
-File generation uses include_str!("../templates/...") so templates stay editable on disk and ship inside the binary. Direct string literals are avoided except for tiny generated snippets (project name substitution). Substitution is a simple {{PROJECT_NAME}} / {{CONTRACT_ID}} replace after include_str!. Comments in main.rs / scaffold.rs will document this vs writing large strings in Rust.
+Templates live under [templates/](templates/) in this repo and are compiled into the CLI with include_str!. At init time they are written to disk; {{PROJECT_NAME}} is substituted in READMEs and package names.
 
-Part 1 — CLI (src/main.rs)
+deploy
 
-clap derive API:
+Build the Soroban contract with stellar contract build, then deploy to a Stellar network (default: testnet).
 
+agent-devex deploy --project-dir my-agent --network testnet
 
+Set STELLAR_ACCOUNT to the source account stellar-cli should use. If it is unset, the CLI still builds and prints the stellar contract deploy ... command instead of submitting.
 
+deploy fails if contracts/agent_pay_integration/Cargo.toml is missing, if stellar is not on PATH, or if the child process exits non-zero.
 
+Generated contract
 
-Binary name: agent-devex
+contracts/agent_pay_integration is a #![no_std] Soroban contract (soroban-sdk 22). AgentPay and AgentGuard are local interfaces, not a published protocol crate.
 
 
 
-init <project-name> --lang ts|py (enum Lang { Ts, Py })
 
 
 
-deploy [--project-dir .] [--network testnet] stub
 
-Behavior:
+Entry
 
 
 
+Role
 
 
-init: refuse if target dir exists and is non-empty; create contracts/ + agent/; write templates; print next steps (cd, stellar contract build, npm install / uv sync).
 
 
 
-deploy: anyhow errors if contracts/agent_pay_integration is missing. Invoke:
+allow_agent
 
 
 
+Admin auth; add an agent to the allowlist
 
 
-stellar contract build (cwd = contract crate)
 
 
 
-stellar contract deploy --network testnet --source-account $STELLAR_ACCOUNT --wasm <built wasm> (or print the exact command if STELLAR_ACCOUNT is unset)
+execute_agent_action
 
-Do not invent a fake deploy success; surface command output and fail on non-zero exit (std::process::Command).
 
-Error handling: fn main() -> anyhow::Result<()> and ? throughout.
 
-Part 2 — Soroban template
+require_auth + allowlist, dummy settle (amount > 0), then store action_id
 
-[templates/contracts/agent_pay_integration/src/lib.rs](templates/contracts/agent_pay_integration/src/lib.rs) (copied to generated projects as contracts/agent_pay_integration/src/lib.rs):
 
 
 
 
+last_action / paid
 
-soroban-sdk contract with #![no_std]
 
 
+Read last action and accumulated dummy payment
 
-Modules or traits agent_pay and agent_guard:
+Treat settlement as a teaching stub, not token transfer or production payment security.
 
+Generated MCP server
 
+Both languages expose one tool: settle_and_execute.
 
 
 
-AgentGuard::assert_authorized(env, agent) — dummy identity check (e.g. require agent in a stored allowlist)
 
 
 
-AgentPay::settle(env, payer, amount) — dummy payment settlement (increment a paid counter / require amount > 0)
 
+Argument
 
 
-Public execute_agent_action(agent, action_id, amount) that: verify → settle → then mutate state (e.g. store last action_id)
 
+Meaning
 
 
-Matching [Cargo.toml](templates/contracts/agent_pay_integration/Cargo.toml) with crate-type = ["cdylib"] and current soroban-sdk (0.23-compatible with stellar-cli; pin a recent stable in the template)
 
-Comments in the contract will state that AgentPay/AgentGuard are local interfaces standing in for a future shared crate.
 
-Part 3 — MCP stubs
 
-TypeScript (--lang ts)
+prompt
 
-[templates/agent/ts/src/index.ts](templates/agent/ts/src/index.ts):
 
 
+LLM intent (logged in the tool result; not executed as code)
 
 
 
-@modelcontextprotocol/sdk stdio Server + ListTools / CallTool
 
 
+agent_address
 
-Tool settle_and_execute with args: prompt, agent_address, action_id, amount (and optional contract_id)
 
 
+Agent’s Stellar/Soroban address
 
-Comments describing the LLM → MCP tool → Stellar tx bridge
 
 
 
-Boilerplate: TransactionBuilder + Contract.call("execute_agent_action", ...) via @stellar/stellar-sdk, sign with Keypair.fromSecret(process.env.STELLAR_SECRET_KEY), submit to Horizon/Soroban RPC testnet
 
+action_id
 
 
-Keep network/RPC URLs as env (STELLAR_RPC_URL, STELLAR_NETWORK_PASSPHRASE, AGENTPAY_CONTRACT_ID) so the stub is copy-paste runnable after init
 
+Passed to the contract as a symbol
 
 
-package.json: @modelcontextprotocol/sdk, @stellar/stellar-sdk, tsx/typescript as needed
 
-Python (--lang py)
 
-Mirror the same tool and env vars using the official mcp Python SDK + stellar-sdk: [templates/agent/py/src/server.py](templates/agent/py/src/server.py) with pyproject.toml dependencies.
 
-Deploy vs MCP
+amount
 
-sequenceDiagram
-  participant LLM
-  participant MCP as MCP_Server
-  participant Horizon as Stellar_RPC
-  participant Contract as AgentPay_Contract
 
-  LLM->>MCP: tools/call settle_and_execute
-  MCP->>MCP: map prompt args to Soroban invoke
-  MCP->>Horizon: signed tx execute_agent_action
-  Horizon->>Contract: verify AgentGuard then AgentPay.settle
-  Contract-->>Horizon: state updated
-  Horizon-->>MCP: result
-  MCP-->>LLM: tool result text
 
-Out of scope
+i128 amount (string)
 
 
 
 
 
-Real on-chain AgentPay protocol / published crates
+contract_id
 
 
 
-Tests for generated projects
+Optional override for AGENTPAY_CONTRACT_ID
 
+Environment:
 
 
-Publishing the CLI to crates.io
+
+
+
+
+
+Variable
+
+
+
+Required
+
+
+
+Default
+
+
+
+
+
+STELLAR_SECRET_KEY
+
+
+
+yes
+
+
+
+—
+
+
+
+
+
+AGENTPAY_CONTRACT_ID
+
+
+
+yes (unless contract_id is passed)
+
+
+
+—
+
+
+
+
+
+STELLAR_RPC_URL
+
+
+
+no
+
+
+
+https://soroban-testnet.stellar.org
+
+
+
+
+
+STELLAR_NETWORK_PASSPHRASE
+
+
+
+no
+
+
+
+Test SDF Network ; September 2015
+
+The server loads the source account from Soroban RPC, builds an invoke of execute_agent_action, prepares and signs the transaction, then submits it.
+
+TypeScript (--lang ts):
+
+cd my-agent/agent
+npm install
+npx tsx src/index.ts
+
+Python (--lang py):
+
+cd my-agent/agent
+uv sync
+uv run python src/server.py
+
+Point your MCP-capable client (Cursor, Claude Desktop, etc.) at that stdio process.
+
+Repository layout (this CLI)
+
+
+
+
+
+
+
+Path
+
+
+
+Purpose
+
+
+
+
+
+[src/main.rs](src/main.rs)
+
+
+
+clap CLI (init, deploy)
+
+
+
+
+
+[src/scaffold.rs](src/scaffold.rs)
+
+
+
+Write templates into a new project
+
+
+
+
+
+[templates/contracts/](templates/contracts/)
+
+
+
+Soroban AgentPay integration crate
+
+
+
+
+
+[templates/agent/ts/](templates/agent/ts/)
+
+
+
+MCP server (TypeScript)
+
+
+
+
+
+[templates/agent/py/](templates/agent/py/)
+
+
+
+MCP server (Python)
+
+
+
+
+
+[templates/project/README.md](templates/project/README.md)
+
+
+
+README copied into generated repos
+
+
+
+Status
+
+Early architecture: scaffolding and a deploy stub. There is no published AgentPay crate, no crates.io release, and no automated test suite for generated projects yet.
+
+License
+
+MIT © AIonWeb3
