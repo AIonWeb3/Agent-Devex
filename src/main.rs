@@ -5,6 +5,7 @@
 //! files instead of giant string literals in Rust. At `init` time we write those bytes
 //! (with `{{PROJECT_NAME}}` substitution) via [`crate::scaffold`].
 
+mod config;
 mod errors;
 mod scaffold;
 
@@ -86,6 +87,11 @@ fn main() -> Result<()> {
     );
     init_tracing();
     tracing::debug!("tracing initialized");
+    if let Some(cfg) = config::load_optional(Path::new("."))?
+        && let Ok(encoded) = toml::to_string(&cfg)
+    {
+        tracing::debug!(encoded, "loaded {}", config::CONFIG_FILE_NAME);
+    }
 
     match Cli::parse().command {
         Commands::Init { project_name, lang } => cmd_init(&project_name, lang),

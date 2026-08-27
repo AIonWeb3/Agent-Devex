@@ -11,6 +11,9 @@ readme = "README.md"
 anyhow = "1"
 clap = { version = "4", features = ["derive", "cargo"] }
 human-panic = "2.0.8"
+serde = "1.0.229"
+serde_derive = "1.0.229"
 thiserror = "2.0.20"
+toml = "0.8.23"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "ansi", "fmt"] }
