@@ -51,6 +51,15 @@ enum Lang {
 }
 
 fn main() -> Result<()> {
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+        )
+        .with_writer(std::io::stderr)
+        .init();
+    tracing::debug!("tracing initialized");
+
     match Cli::parse().command {
         Commands::Init { project_name, lang } => cmd_init(&project_name, lang),
         Commands::Deploy {
