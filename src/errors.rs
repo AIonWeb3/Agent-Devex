@@ -31,4 +31,11 @@ pub enum AgentDevexError {
 
     #[error("no .wasm after build — check stellar contract build output")]
     WasmNotFound,
+
+    #[error("invalid TOML config {}: {source}", .path.display())]
+    InvalidToml {
+        path: PathBuf,
+        #[source]
+        source: Box<toml::de::Error>,
+    },
 }
