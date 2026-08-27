@@ -1,0 +1,16 @@
+---
+description: Agent-Devex product architecture — CLI, templates, Stellar/MCP
+alwaysApply: true
+---
+
+# Agent-Devex
+
+This repo is the **agent-devex** Cargo binary (crate root = repo root). Do not run `cargo new agent-devex` here; that nests a second crate.
+
+- **`init`** writes `contracts/agent_pay_integration` and `agent/` (TS or Python MCP).
+- **`deploy`** shells out to `stellar` (build, then testnet deploy if `STELLAR_ACCOUNT` is set).
+- Templates live in `templates/` and are embedded with `include_str!` plus `{{PROJECT_NAME}}` substitution. Do not paste large TS/Python/Soroban sources as Rust string literals.
+- AgentPay / AgentGuard in generated contracts are **local interfaces**, not published crates.
+- MCP tool is `settle_and_execute` (prompt is logged, not executed). Env: `STELLAR_SECRET_KEY`, `AGENTPAY_CONTRACT_ID`, optional RPC/passphrase.
+
+Keep PRs small and focused. Prefer `thiserror` for domain errors and `anyhow` at `main`.

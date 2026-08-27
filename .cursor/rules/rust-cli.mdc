@@ -1,0 +1,18 @@
+---
+description: Rust CLI conventions for src/ (clap, tracing, errors)
+globs: src/**/*.rs
+alwaysApply: false
+---
+
+# Rust CLI (`src/`)
+
+- Clap derive: root `Cli` uses `name`, `version`, `author`, `about` from Cargo (`cargo` feature).
+- `fn main() -> anyhow::Result<()>`. Typed failures belong in `error::Error` (`thiserror`) and convert with `?`.
+- Tracing: `fmt` to **stdout**, default **INFO**, `.with_ansi` only on a TTY and not when `NO_COLOR` is set. ERROR red / WARN yellow come from tracing-subscriber `ansi`.
+- Do not log secrets (`STELLAR_SECRET_KEY`, key material).
+- `stellar` via `std::process::Command`; surface spawn vs non-zero exit as distinct errors.
+
+```rust
+// ❌ anyhow::bail! for every scaffold/deploy failure
+// ✅ return crate::error::Error::{Io, DirectoryNotEmpty, StellarSpawn, ...}
+```

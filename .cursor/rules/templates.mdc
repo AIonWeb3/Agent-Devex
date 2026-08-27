@@ -1,0 +1,17 @@
+---
+description: Generated Soroban and MCP templates under templates/
+globs: templates/**
+alwaysApply: false
+---
+
+# Templates
+
+These files are copied into user projects by `init`. Keep them compiling and copy-paste runnable after env vars are set.
+
+**Soroban** (`templates/contracts/`): `#![no_std]`, `cdylib`, `soroban-sdk`. Guard then settle then state change in `execute_agent_action`. Dummy settle is not a token transfer.
+
+**TypeScript MCP** (`templates/agent/ts/`): `@modelcontextprotocol/sdk` + `@stellar/stellar-sdk`. Tool `settle_and_execute`. Sign with `STELLAR_SECRET_KEY`; do not hardcode secrets.
+
+**Python MCP** (`templates/agent/py/`): `mcp` + `stellar-sdk`. Same tool name, args, and env as TS.
+
+Placeholders like `{{PROJECT_NAME}}` must remain in files that `scaffold.rs` substitutes. Do not rename template paths without updating `include_str!` in `src/scaffold.rs`.
