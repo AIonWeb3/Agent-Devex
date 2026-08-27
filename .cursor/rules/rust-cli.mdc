@@ -9,6 +9,7 @@ alwaysApply: false
 - Clap derive: root `Cli` uses `name`, `version`, `author`, `about` from Cargo (`cargo` feature).
 - `fn main() -> anyhow::Result<()>`. Typed failures belong in `errors::AgentDevexError` (`thiserror`) and convert with `?`.
 - Tracing: `fmt` to **stdout**, default **INFO**, `.with_ansi` only on a TTY and not when `NO_COLOR` is set. ERROR red / WARN yellow come from tracing-subscriber `ansi`.
+- First line of `main`: `human_panic::setup_panic!` so **release** panics show a dump file instead of a raw backtrace (debug / `RUST_BACKTRACE=1` keep the default hook).
 - Do not log secrets (`STELLAR_SECRET_KEY`, key material).
 - `stellar` via `std::process::Command`; surface spawn vs non-zero exit as distinct errors.
 
