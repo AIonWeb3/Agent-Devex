@@ -7,6 +7,7 @@
 
 mod scaffold;
 
+use std::io::IsTerminal;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -50,15 +51,30 @@ enum Lang {
     Py,
 }
 
-fn main() -> Result<()> {
+fn ansi_logs_enabled() -> bool {
+    // Honor https://no-color.org — skip ANSI when the user asks for plain output.
+    if std::env::var_os("NO_COLOR").is_some() {
+        return false;
+    }
+    std::io::stdout().is_terminal()
+}
+
+fn init_tracing() {
+    // tracing-subscriber's fmt layer maps levels to ANSI colors when `ansi` is on:
+    // ERROR red, WARN yellow, INFO green, DEBUG blue, TRACE purple.
     tracing_subscriber::fmt()
         .with_writer(std::io::stdout)
+        .with_ansi(ansi_logs_enabled())
         .with_env_filter(
             tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
                 tracing_subscriber::EnvFilter::new(tracing::Level::INFO.as_str())
             }),
         )
         .init();
+}
+
+fn main() -> Result<()> {
+    init_tracing();
     tracing::debug!("tracing initialized");
 
     match Cli::parse().command {
