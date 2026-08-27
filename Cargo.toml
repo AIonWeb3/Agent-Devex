@@ -1,15 +1,10 @@
 [package]
 name = "agent-devex"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 description = "CLI to scaffold, test, and deploy AI-to-Web3 integrations on Stellar (Soroban + MCP)."
 license = "MIT"
 readme = "README.md"
-default-run = "agent-devex"
-
-[[bin]]
-name = "agent-devex"
-path = "src/main.rs"
 
 [dependencies]
 anyhow = "1"
