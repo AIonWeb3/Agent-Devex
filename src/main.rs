@@ -77,6 +77,13 @@ fn init_tracing() {
 }
 
 fn main() -> Result<()> {
+    // Release builds: friendly dump instead of a raw backtrace. Debug / RUST_BACKTRACE=1 keep the default hook.
+    human_panic::setup_panic!(
+        human_panic::metadata!()
+            .authors("AIonWeb3")
+            .homepage("https://github.com/AIonWeb3/Agent-Devex")
+            .support("- Open an issue: https://github.com/AIonWeb3/Agent-Devex/issues")
+    );
     init_tracing();
     tracing::debug!("tracing initialized");
 
