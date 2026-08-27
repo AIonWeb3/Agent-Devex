@@ -5,13 +5,16 @@
 //! files instead of giant string literals in Rust. At `init` time we write those bytes
 //! (with `{{PROJECT_NAME}}` substitution) via [`crate::scaffold`].
 
+mod error;
 mod scaffold;
 
 use std::io::IsTerminal;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use anyhow::{Context, Result, bail};
+use anyhow::Result;
+
+use crate::error::Error;
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
@@ -91,14 +94,14 @@ fn cmd_init(project_name: &str, lang: Lang) -> Result<()> {
     if root.exists() {
         let empty = root
             .read_dir()
-            .with_context(|| format!("cannot read {}", root.display()))?
+            .map_err(|source| Error::ReadDir {
+                path: root.clone(),
+                source,
+            })?
             .next()
             .is_none();
         if !empty {
-            bail!(
-                "directory {} already exists and is not empty",
-                root.display()
-            );
+            return Err(Error::DirectoryNotEmpty { path: root }.into());
         }
     }
 
@@ -128,10 +131,10 @@ fn cmd_init(project_name: &str, lang: Lang) -> Result<()> {
 fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
     let contract_dir = project_dir.join("contracts").join("agent_pay_integration");
     if !contract_dir.join("Cargo.toml").is_file() {
-        bail!(
-            "missing {} — run `agent-devex init` first or pass --project-dir",
-            contract_dir.join("Cargo.toml").display()
-        );
+        return Err(Error::MissingContractManifest {
+            path: contract_dir.join("Cargo.toml"),
+        }
+        .into());
     }
 
     run_stellar(
@@ -169,41 +172,51 @@ fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
                 ],
                 project_dir,
                 "stellar contract deploy",
-            )
+            )?;
+            Ok(())
         }
     }
 }
 
-fn run_stellar(args: &[&str], cwd: &Path, label: &str) -> Result<()> {
+fn run_stellar(args: &[&str], cwd: &Path, label: &str) -> Result<(), Error> {
     let status = Command::new("stellar")
         .args(args)
         .current_dir(cwd)
         .status()
-        .with_context(|| {
-            format!("{label} failed to start — is stellar-cli installed and on PATH?")
+        .map_err(|source| Error::StellarSpawn {
+            label: label.to_string(),
+            source,
         })?;
     if !status.success() {
-        bail!("{label} exited with {status}");
+        return Err(Error::StellarFailed {
+            label: label.to_string(),
+            status,
+        });
     }
     Ok(())
 }
 
-fn find_wasm(contract_dir: &Path) -> Result<PathBuf> {
+fn find_wasm(contract_dir: &Path) -> Result<PathBuf, Error> {
     let target = contract_dir.join("target").join("wasm32-unknown-unknown");
     let mut found = Vec::new();
     for profile in ["release", "debug"] {
         let dir = target.join(profile);
         if dir.is_dir() {
-            for entry in std::fs::read_dir(&dir).with_context(|| dir.display().to_string())? {
-                let path = entry?.path();
+            for entry in std::fs::read_dir(&dir).map_err(|source| Error::ReadDir {
+                path: dir.clone(),
+                source,
+            })? {
+                let path = entry
+                    .map_err(|source| Error::ReadDir {
+                        path: dir.clone(),
+                        source,
+                    })?
+                    .path();
                 if path.extension().and_then(|e| e.to_str()) == Some("wasm") {
                     found.push(path);
                 }
             }
         }
     }
-    found
-        .into_iter()
-        .next()
-        .context("no .wasm after build — check stellar contract build output")
+    found.into_iter().next().ok_or(Error::WasmNotFound)
 }
