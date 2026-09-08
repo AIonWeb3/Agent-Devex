@@ -1,0 +1,7 @@
+# Agent-Devex project configuration
+network = "testnet"
+default_lang = "{{DEFAULT_LANG}}"
+
+[project]
+author = ""
+description = "{{PROJECT_NAME}} — AI agent payments on Stellar"

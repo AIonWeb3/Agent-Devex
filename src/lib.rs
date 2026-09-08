@@ -20,3 +20,12 @@ pub enum Lang {
     /// Python MCP server (runs via Python / uv)
     Py,
 }
+
+impl Lang {
+    pub fn as_config_str(self) -> &'static str {
+        match self {
+            Lang::Ts => "ts",
+            Lang::Py => "py",
+        }
+    }
+}
