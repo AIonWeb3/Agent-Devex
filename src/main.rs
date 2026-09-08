@@ -33,9 +33,9 @@ enum Commands {
     /// Create a monorepo: `contracts/` (Soroban + AgentPay) and `agent/` (MCP server).
     Init {
         project_name: String,
-        /// MCP server language
+        /// MCP server language (prompted on a TTY when omitted)
         #[arg(long, value_enum)]
-        lang: Lang,
+        lang: Option<Lang>,
     },
     /// Compile the Soroban contract and deploy it to a Stellar network (testnet by default).
     Deploy {
