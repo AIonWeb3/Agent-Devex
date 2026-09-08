@@ -21,6 +21,15 @@ pub const AGENT_TOML_FILE_NAME: &str = "agent.toml";
 pub struct AgentConfig {
     /// Stellar network name (`testnet` or `mainnet`).
     pub network: String,
+    /// Optional on-chain contract identifiers (never secret keys).
+    pub contract_ids: ContractIds,
+}
+
+/// Named contract ids for a generated project.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct ContractIds {
+    /// AgentPay / agent_pay_integration contract id when known.
+    pub agent_pay: Option<String>,
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
