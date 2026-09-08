@@ -11,7 +11,7 @@ use crate::{Lang, scaffold};
 pub fn cmd_init(project_name: &str, lang: Option<Lang>) -> Result<()> {
     let lang = resolve_lang(lang)?;
     crate::names::validate_project_name(project_name)?;
-    let root = PathBuf::from(project_name);
+    let root = project_root(project_name);
     if !fsutil::is_missing_or_empty_dir(&root)? {
         return Err(AgentDevexError::DirectoryNotEmpty { path: root }.into());
     }
@@ -45,4 +45,8 @@ fn resolve_lang(explicit: Option<Lang>) -> Result<Lang> {
 
     output::hint("No --lang provided; defaulting to TypeScript (pass --lang ts|py to choose).");
     Ok(Lang::Ts)
+}
+
+pub(crate) fn project_root(project_name: &str) -> PathBuf {
+    PathBuf::from(project_name)
 }
