@@ -58,6 +58,9 @@ enum Commands {
     Status {
         #[arg(long, default_value = ".")]
         project_dir: PathBuf,
+        /// Exit with an error when no contract id is configured
+        #[arg(long)]
+        require_id: bool,
     },
 }
 
@@ -107,6 +110,9 @@ fn main() -> Result<()> {
         } => cmd_deploy(&project_dir, network.as_deref()),
         Commands::Validate { project_dir } => cmd_validate(&project_dir),
         Commands::Doctor => cmd_doctor(),
-        Commands::Status { project_dir } => cmd_status(&project_dir),
+        Commands::Status {
+            project_dir,
+            require_id,
+        } => cmd_status(&project_dir, require_id),
     }
 }
