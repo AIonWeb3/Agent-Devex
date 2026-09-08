@@ -11,6 +11,11 @@ use std::process::ExitStatus;
 /// Result alias bound to [`AgentDevexError`].
 pub type Result<T> = std::result::Result<T, AgentDevexError>;
 
+/// Structured failures for the Agent-Devex CLI and library.
+///
+/// Variants are displayed via `thiserror` (`Display`) and can be converted
+/// into `anyhow::Error` at the binary edge. Prefer returning this enum over
+/// panicking for expected operational failures.
 #[derive(Debug, thiserror::Error)]
 pub enum AgentDevexError {
     /// Missing project or tool config (e.g. generated `Cargo.toml`, future CLI config).
