@@ -16,6 +16,7 @@ pub fn cmd_init(project_name: &str, lang: Option<Lang>) -> Result<()> {
         return Err(AgentDevexError::DirectoryNotEmpty { path: root }.into());
     }
 
+    tracing::info!(project = %project_name, ?lang, "scaffolding project");
     scaffold::write_project(&root, project_name, lang)?;
 
     output::success(format!("Created {project_name}/"));
