@@ -1,6 +1,18 @@
 const form = document.getElementById("demo-form");
 const status = document.getElementById("form-status");
 
+document.getElementById("fill-demo")?.addEventListener("click", async () => {
+  const res = await fetch("demo-data.json");
+  const data = await res.json();
+  const args = data.sample_tool_call.arguments;
+  form.prompt.value = args.prompt;
+  form.agent_address.value = args.agent_address;
+  form.action_id.value = args.action_id;
+  form.amount.value = args.amount;
+  status.textContent = "Loaded sample marketplace payload.";
+  status.dataset.state = "ok";
+});
+
 form?.addEventListener("submit", (event) => {
   event.preventDefault();
   const data = new FormData(form);
