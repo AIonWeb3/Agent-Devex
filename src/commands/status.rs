@@ -16,12 +16,19 @@ pub fn cmd_status(project_dir: &Path) -> Result<()> {
     }
 
     let cfg = config::load_or_default(project_dir)?;
-    let network = cfg.network.as_deref().unwrap_or("testnet");
+    let state = crate::state::load_optional(project_dir)?.unwrap_or_default();
+    let network = state
+        .network
+        .as_deref()
+        .or(cfg.network.as_deref())
+        .unwrap_or("testnet");
     let lang = cfg
         .default_lang
         .clone()
         .unwrap_or_else(|| "unknown".to_string());
-    let contract_id = std::env::var("AGENTPAY_CONTRACT_ID").ok();
+    let contract_id = std::env::var("AGENTPAY_CONTRACT_ID")
+        .ok()
+        .or(state.contract_id.clone());
     let rpc = std::env::var("STELLAR_RPC_URL")
         .unwrap_or_else(|_| "https://soroban-testnet.stellar.org".to_string());
 
