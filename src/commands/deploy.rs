@@ -1,16 +1,15 @@
+use anyhow::Result;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use anyhow::Result;
 
 use crate::errors::AgentDevexError;
+use crate::paths;
 
 pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
-    let contract_dir = project_dir.join("contracts").join("agent_pay_integration");
-    if !contract_dir.join("Cargo.toml").is_file() {
-        return Err(AgentDevexError::ConfigNotFound {
-            path: contract_dir.join("Cargo.toml"),
-        }
-        .into());
+    let contract_dir = paths::contract_crate_dir(project_dir);
+    let manifest = paths::contract_manifest(project_dir);
+    if !manifest.is_file() {
+        return Err(AgentDevexError::ConfigNotFound { path: manifest }.into());
     }
 
     run_stellar(
@@ -73,7 +72,7 @@ fn run_stellar(args: &[&str], cwd: &Path, label: &str) -> Result<(), AgentDevexE
 }
 
 fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
-    let target = contract_dir.join("target").join("wasm32-unknown-unknown");
+    let target = paths::wasm_target_root(contract_dir);
     let mut found = Vec::new();
     for profile in ["release", "debug"] {
         let dir = target.join(profile);

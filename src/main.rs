@@ -11,9 +11,9 @@ use std::path::{Path, PathBuf};
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
+use agent_devex::Lang;
 use agent_devex::commands::{deploy::cmd_deploy, init::cmd_init};
 use agent_devex::config;
-use agent_devex::Lang;
 
 #[derive(Parser)]
 #[command(

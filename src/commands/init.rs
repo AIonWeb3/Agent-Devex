@@ -1,7 +1,8 @@
-use std::path::PathBuf;
 use anyhow::Result;
+use std::path::PathBuf;
 
-use crate::{Lang, scaffold, errors::AgentDevexError};
+use crate::errors::AgentDevexError;
+use crate::{Lang, scaffold};
 
 pub fn cmd_init(project_name: &str, lang: Lang) -> Result<()> {
     let root = PathBuf::from(project_name);

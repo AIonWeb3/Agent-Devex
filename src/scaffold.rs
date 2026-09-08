@@ -37,15 +37,15 @@ pub fn write_project(root: &Path, project_name: &str, lang: Lang) -> Result<(), 
 
     write_file(
         &root
-            .join("contracts")
-            .join("agent_pay_integration")
+            .join(crate::paths::CONTRACTS_DIR)
+            .join(crate::paths::AGENT_PAY_CONTRACT)
             .join("Cargo.toml"),
         include_str!("../templates/contracts/agent_pay_integration/Cargo.toml"),
     )?;
     write_file(
         &root
-            .join("contracts")
-            .join("agent_pay_integration")
+            .join(crate::paths::CONTRACTS_DIR)
+            .join(crate::paths::AGENT_PAY_CONTRACT)
             .join("src")
             .join("lib.rs"),
         include_str!("../templates/contracts/agent_pay_integration/src/lib.rs"),
@@ -59,7 +59,7 @@ pub fn write_project(root: &Path, project_name: &str, lang: Lang) -> Result<(), 
 }
 
 fn write_agent_ts(root: &Path, project_name: &str) -> Result<(), AgentDevexError> {
-    let agent = root.join("agent");
+    let agent = root.join(crate::paths::AGENT_DIR);
     write_file(
         &agent.join("package.json"),
         &subst(
@@ -86,7 +86,7 @@ fn write_agent_ts(root: &Path, project_name: &str) -> Result<(), AgentDevexError
 }
 
 fn write_agent_py(root: &Path, project_name: &str) -> Result<(), AgentDevexError> {
-    let agent = root.join("agent");
+    let agent = root.join(crate::paths::AGENT_DIR);
     write_file(
         &agent.join("pyproject.toml"),
         &subst(
