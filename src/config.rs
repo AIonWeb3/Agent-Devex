@@ -52,6 +52,9 @@ impl AgentConfig {
     /// Read the raw TOML bytes from `agent.toml`.
     pub fn read_raw(project_dir: &Path) -> crate::errors::Result<String> {
         let path = Self::path(project_dir);
+        if !path.is_file() {
+            return Err(AgentDevexError::ConfigNotFound { path });
+        }
         fs::read_to_string(&path).map_err(|source| AgentDevexError::IoError { path, source })
     }
 }
