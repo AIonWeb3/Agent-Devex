@@ -13,7 +13,7 @@ pub fn cmd_init(project_name: &str, lang: Option<Lang>) -> Result<()> {
     crate::names::validate_project_name(project_name)?;
     let root = project_root(project_name);
     if !fsutil::is_missing_or_empty_dir(&root)? {
-        return Err(AgentDevexError::DirectoryNotEmpty { path: root }.into());
+        return Err(AgentDevexError::ProjectAlreadyExists { path: root }.into());
     }
 
     std::fs::create_dir_all(&root).map_err(|source| AgentDevexError::ProjectCreationError {
