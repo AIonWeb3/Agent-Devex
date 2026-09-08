@@ -64,6 +64,15 @@
           </article>
         </div>
       </section>
+      <section id="onboarding">
+        <h2>Onboarding checklist</h2>
+        <ol class="steps">
+          <li>Install Rust stable and run <code>agent-devex doctor</code></li>
+          <li><code>agent-devex init my-agent --lang ts</code></li>
+          <li>Copy <code>.env.example</code> → <code>.env</code> (never commit secrets)</li>
+          <li>Deploy with <code>STELLAR_ACCOUNT</code> set, then start the MCP server</li>
+        </ol>
+      </section>
       <section id="empty" class="empty">
         <h2>When nothing is deployed yet</h2>
         <p>
