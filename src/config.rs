@@ -38,10 +38,7 @@ impl Default for AgentConfig {
         Self {
             network: DEFAULT_NETWORK.to_string(),
             contract_ids: ContractIds { agent_pay: None },
-            mcp: McpConfig {
-                lang: None,
-                port: DEFAULT_MCP_PORT,
-            },
+            mcp: McpConfig::default(),
         }
     }
 }
@@ -71,6 +68,15 @@ impl McpConfig {
             });
         }
         Ok(port)
+    }
+}
+
+impl Default for McpConfig {
+    fn default() -> Self {
+        Self {
+            lang: None,
+            port: DEFAULT_MCP_PORT,
+        }
     }
 }
 
