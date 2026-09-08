@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent-Devex — AI agents that settle on Stellar</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">AIonWeb3 · Stellar · MCP</p>
+      <h1>Ship AI-to-chain payments in one CLI.</h1>
+      <p class="lede">
+        Agent-Devex scaffolds a Soroban contract with AgentPay settlement and an MCP server
+        so any LLM can invoke <code>settle_and_execute</code> on testnet.
+      </p>
+      <p class="cta-row">
+        <a class="btn primary" href="#workflow">See the workflow</a>
+        <a class="btn ghost" href="https://github.com/AIonWeb3/Agent-Devex">GitHub</a>
+      </p>
+    </header>
+    <main>
+      <section id="problem">
+        <h2>The problem</h2>
+        <p>
+          Teams spend weeks wiring smart contracts, secret handling, and Model Context Protocol
+          servers before an agent can take a single paid action on-chain.
+        </p>
+      </section>
+      <section id="workflow">
+        <h2>Core workflow</h2>
+        <ol class="steps">
+          <li><strong>init</strong> — generate contract + MCP monorepo</li>
+          <li><strong>doctor / validate</strong> — confirm toolchain and layout</li>
+          <li><strong>deploy</strong> — build WASM and publish to Stellar</li>
+          <li><strong>status</strong> — confirm contract id for the agent</li>
+        </ol>
+      </section>
+    </main>
+    <footer>
+      <p>MIT · Built for client demonstrations of AI × Web3 on Stellar.</p>
+    </footer>
+  </body>
+</html>
