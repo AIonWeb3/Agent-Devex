@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <nav class="topnav" aria-label="Primary">
       <a class="brand" href="#">Agent-Devex</a>
       <div class="nav-links">
@@ -30,7 +31,7 @@
         <a class="btn ghost" href="https://github.com/AIonWeb3/Agent-Devex">GitHub</a>
       </p>
     </header>
-    <main>
+    <main id="main">
       <section id="problem">
         <h2>The problem</h2>
         <p>
@@ -70,7 +71,7 @@
         <form id="demo-form" class="card" novalidate>
           <label>
             Prompt
-            <input name="prompt" required placeholder="Settle fee then unlock listing 42" />
+            <input name="prompt" required placeholder="Settle fee then unlock listing 42" autocomplete="off" />
           </label>
           <label>
             Agent address
