@@ -12,4 +12,30 @@ target/
 # Generated WASM artifacts
 *.wasm
 
+# macOS
 .DS_Store
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment files (secrets)
+.env
+.env.local
+.env.*.local
+
+# Node.js (generated projects)
+node_modules/
+
+# Python (generated projects)
+__pycache__/
+*.pyc
+.venv/
+
+# Test output
+test-project/
+test-output/
+tmp/
