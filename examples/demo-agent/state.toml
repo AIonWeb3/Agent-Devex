@@ -1,0 +1,4 @@
+network = "testnet"
+contract_id = "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+wasm_path = "contracts/agent_pay_integration/target/wasm32-unknown-unknown/release/agent_pay_integration.wasm"
+last_deployed_unix = 1725772800
