@@ -16,6 +16,9 @@ pub const CONFIG_FILE_NAME: &str = "agent-devex.toml";
 /// Project configuration file written by `init` and read by compile/deploy/run.
 pub const AGENT_TOML_FILE_NAME: &str = "agent.toml";
 
+/// Default local MCP listen port used when `agent.toml` omits a value.
+pub const DEFAULT_MCP_PORT: u16 = 3000;
+
 /// Project-level configuration stored in [`AGENT_TOML_FILE_NAME`].
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AgentConfig {
@@ -35,10 +38,24 @@ pub struct ContractIds {
 }
 
 /// MCP-related project settings.
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct McpConfig {
     /// MCP language hint (`ts` or `py`) when set.
     pub lang: Option<String>,
+    /// Local MCP HTTP/SSE port.
+    pub port: u16,
+}
+
+impl McpConfig {
+    /// Reject port `0` (unspecified / invalid for a listen address).
+    pub fn validate_port(port: u16) -> crate::errors::Result<u16> {
+        if port == 0 {
+            return Err(AgentDevexError::InvalidPort {
+                port: u32::from(port),
+            });
+        }
+        Ok(port)
+    }
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
