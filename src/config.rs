@@ -92,6 +92,23 @@ impl AgentConfig {
         }
         Ok(path)
     }
+
+    /// Write this config to `agent.toml` via a temp file, then replace the target.
+    pub fn save(&self, project_dir: &Path) -> crate::errors::Result<()> {
+        let path = Self::create_file(project_dir)?;
+        let raw = self.to_toml()?;
+        let tmp = path.with_extension("toml.tmp");
+        fs::write(&tmp, raw.as_bytes()).map_err(|source| AgentDevexError::IoError {
+            path: tmp.clone(),
+            source,
+        })?;
+        fs::copy(&tmp, &path).map_err(|source| AgentDevexError::IoError {
+            path: path.clone(),
+            source,
+        })?;
+        fs::remove_file(&tmp).map_err(|source| AgentDevexError::IoError { path: tmp, source })?;
+        Ok(())
+    }
 }
 
 /// Named contract ids for a generated project.
