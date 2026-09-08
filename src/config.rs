@@ -1,7 +1,8 @@
 //! Configuration management for Agent-Devex.
 //!
 //! Handles loading and parsing of the optional `agent-devex.toml` file
-//! in the working directory using `serde` and `toml`.
+//! in the working directory using `serde` and `toml`, plus project-level
+//! `agent.toml` ([`AGENT_TOML_FILE_NAME`]).
 use std::fs;
 use std::path::Path;
 
@@ -11,6 +12,9 @@ use crate::Lang;
 use crate::errors::AgentDevexError;
 
 pub const CONFIG_FILE_NAME: &str = "agent-devex.toml";
+
+/// Project configuration file written by `init` and read by compile/deploy/run.
+pub const AGENT_TOML_FILE_NAME: &str = "agent.toml";
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct AgentDevexConfig {
