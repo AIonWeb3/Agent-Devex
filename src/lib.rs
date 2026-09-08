@@ -16,6 +16,8 @@ pub mod scaffold;
 pub mod secrets;
 pub mod state;
 
+pub use errors::{AgentDevexError, Result};
+
 /// Supported languages for the generated MCP server.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, clap::ValueEnum)]
 pub enum Lang {
