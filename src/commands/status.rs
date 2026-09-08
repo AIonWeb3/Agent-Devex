@@ -7,7 +7,7 @@ use crate::output;
 use crate::paths;
 
 /// Print local project + contract configuration used by the MCP server.
-pub fn cmd_status(project_dir: &Path) -> Result<()> {
+pub fn cmd_status(project_dir: &Path, require_id: bool) -> Result<()> {
     if !paths::contract_manifest(project_dir).is_file() {
         return Err(AgentDevexError::ConfigNotFound {
             path: paths::contract_manifest(project_dir),
@@ -38,7 +38,15 @@ pub fn cmd_status(project_dir: &Path) -> Result<()> {
     output::hint(format!("  rpc:         {rpc}"));
     match contract_id {
         Some(id) => output::hint(format!("  contract id: {id}")),
-        None => output::warn("  contract id: (not set) export AGENTPAY_CONTRACT_ID after deploy"),
+        None => {
+            output::warn("  contract id: (not set) export AGENTPAY_CONTRACT_ID after deploy");
+            if require_id {
+                return Err(AgentDevexError::ValidationFailed(
+                    "contract id is required for this status check".to_string(),
+                )
+                .into());
+            }
+        }
     }
     Ok(())
 }
