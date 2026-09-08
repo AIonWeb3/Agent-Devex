@@ -35,6 +35,8 @@ struct Cli {
 enum Commands {
     /// Create a monorepo: `contracts/` (Soroban + AgentPay) and `agent/` (MCP server).
     Init {
+        /// Directory name for the generated project (`agent.toml` is written here).
+        #[arg(value_name = "PROJECT_NAME")]
         project_name: String,
         /// MCP server language (prompted on a TTY when omitted)
         #[arg(long, value_enum)]
