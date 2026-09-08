@@ -23,6 +23,9 @@ pub fn cmd_init(project_name: &str, lang: Option<Lang>) -> Result<()> {
 
     tracing::info!(project = %project_name, ?lang, "scaffolding project");
     scaffold::write_project(&root, project_name, lang)?;
+    let mut agent_cfg = config::AgentConfig::default();
+    agent_cfg.mcp.lang = Some(lang.as_config_str().to_string());
+    agent_cfg.save(&root)?;
     crate::next_steps::after_init(project_name, lang);
     Ok(())
 }
