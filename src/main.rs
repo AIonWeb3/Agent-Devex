@@ -13,7 +13,8 @@ use clap::{Parser, Subcommand};
 
 use agent_devex::Lang;
 use agent_devex::commands::{
-    deploy::cmd_deploy, doctor::cmd_doctor, init::cmd_init, validate::cmd_validate,
+    deploy::cmd_deploy, doctor::cmd_doctor, init::cmd_init, status::cmd_status,
+    validate::cmd_validate,
 };
 use agent_devex::config;
 
@@ -53,6 +54,11 @@ enum Commands {
     },
     /// Diagnose required and optional tools on this machine.
     Doctor,
+    /// Show local network, language, and contract id configuration.
+    Status {
+        #[arg(long, default_value = ".")]
+        project_dir: PathBuf,
+    },
 }
 
 fn ansi_logs_enabled() -> bool {
@@ -101,5 +107,6 @@ fn main() -> Result<()> {
         } => cmd_deploy(&project_dir, network.as_deref()),
         Commands::Validate { project_dir } => cmd_validate(&project_dir),
         Commands::Doctor => cmd_doctor(),
+        Commands::Status { project_dir } => cmd_status(&project_dir),
     }
 }
