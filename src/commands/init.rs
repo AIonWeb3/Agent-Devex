@@ -16,6 +16,11 @@ pub fn cmd_init(project_name: &str, lang: Option<Lang>) -> Result<()> {
         return Err(AgentDevexError::DirectoryNotEmpty { path: root }.into());
     }
 
+    std::fs::create_dir_all(&root).map_err(|source| AgentDevexError::ProjectCreationError {
+        path: root.clone(),
+        reason: source.to_string(),
+    })?;
+
     tracing::info!(project = %project_name, ?lang, "scaffolding project");
     scaffold::write_project(&root, project_name, lang)?;
     crate::next_steps::after_init(project_name, lang);
