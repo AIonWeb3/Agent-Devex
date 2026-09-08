@@ -4,7 +4,7 @@
 //! in the working directory using `serde` and `toml`, plus project-level
 //! `agent.toml` ([`AGENT_TOML_FILE_NAME`]).
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use serde_derive::{Deserialize, Serialize};
 
@@ -40,6 +40,13 @@ impl Default for AgentConfig {
             contract_ids: ContractIds { agent_pay: None },
             mcp: McpConfig::default(),
         }
+    }
+}
+
+impl AgentConfig {
+    /// Resolve `agent.toml` under `project_dir` (defaults to the current directory when `.`).
+    pub fn path(project_dir: &Path) -> PathBuf {
+        project_dir.join(AGENT_TOML_FILE_NAME)
     }
 }
 
