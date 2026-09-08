@@ -64,6 +64,23 @@ enum Commands {
     },
 }
 
+fn load_dotenv_files(cli: &Cli) {
+    // Process environment always wins. `.env` only fills missing keys (never logged).
+    let _ = dotenvy::dotenv();
+    let extra = match &cli.command {
+        Commands::Deploy { project_dir, .. }
+        | Commands::Validate { project_dir }
+        | Commands::Status { project_dir, .. } => Some(project_dir.as_path()),
+        Commands::Init { .. } | Commands::Doctor => None,
+    };
+    if let Some(dir) = extra {
+        let path = dir.join(".env");
+        if path.is_file() {
+            let _ = dotenvy::from_path(&path);
+        }
+    }
+}
+
 fn ansi_logs_enabled() -> bool {
     // Honor https://no-color.org — skip ANSI when the user asks for plain output.
     if std::env::var_os("NO_COLOR").is_some() {
@@ -96,13 +113,15 @@ fn main() -> Result<()> {
     );
     init_tracing();
     tracing::debug!("tracing initialized");
+    let cli = Cli::parse();
+    load_dotenv_files(&cli);
     if let Some(cfg) = config::load_optional(Path::new("."))?
         && let Ok(encoded) = toml::to_string(&cfg)
     {
         tracing::debug!(encoded, "loaded {}", config::CONFIG_FILE_NAME);
     }
 
-    match Cli::parse().command {
+    match cli.command {
         Commands::Init { project_name, lang } => cmd_init(&project_name, lang),
         Commands::Deploy {
             project_dir,
