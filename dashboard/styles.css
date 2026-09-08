@@ -5,6 +5,8 @@
   --accent: #6ea8ff;
   --accent-2: #7c5cff;
   --card: #111827;
+  --border: #1f2a44;
+  --radius: 16px;
 }
 
 .skip-link {
@@ -41,7 +43,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #1f2a44;
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   background: rgba(7, 11, 20, 0.92);
@@ -127,8 +129,8 @@ code {
 
 .steps {
   background: var(--card);
-  border: 1px solid #1f2a44;
-  border-radius: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 1.25rem 1.25rem 1.25rem 2.25rem;
 }
 
@@ -145,8 +147,8 @@ footer {
 
 .card {
   background: var(--card);
-  border: 1px solid #1f2a44;
-  border-radius: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 1.1rem 1.2rem;
 }
 
@@ -176,7 +178,7 @@ footer {
 
 .empty {
   border: 1px dashed #3a4d73;
-  border-radius: 16px;
+  border-radius: var(--radius);
   padding: 1.25rem;
   background: rgba(110, 168, 255, 0.06);
 }
