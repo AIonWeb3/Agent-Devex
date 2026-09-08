@@ -55,6 +55,15 @@ pub fn cmd_deploy(project_dir: &Path, network: Option<&str>) -> Result<()> {
             }
             if let Some(id) = process::parse_contract_id(&out) {
                 crate::output::success(format!("Contract id {id}"));
+                let mut state = crate::state::load_optional(project_dir)?.unwrap_or_default();
+                state.network = Some(network.clone());
+                state.contract_id = Some(id);
+                state.wasm_path = Some(wasm.display().to_string());
+                state.last_deployed_unix = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .ok()
+                    .map(|d| d.as_secs());
+                crate::state::save(project_dir, &state)?;
             }
             crate::next_steps::after_deploy_success(&network);
             Ok(())
