@@ -2,8 +2,14 @@
 //!
 //! Uses `thiserror` to define typed, structured errors for programmatic handling
 //! and user-friendly display.
+//!
+//! Library code should prefer [`Result`] in this module so failures stay
+//! `AgentDevexError` until the binary converts them at the process edge.
 use std::path::PathBuf;
 use std::process::ExitStatus;
+
+/// Result alias bound to [`AgentDevexError`].
+pub type Result<T> = std::result::Result<T, AgentDevexError>;
 
 #[derive(Debug, thiserror::Error)]
 pub enum AgentDevexError {
