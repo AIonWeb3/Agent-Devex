@@ -3,20 +3,17 @@
 //! File generation: templates live on disk under `templates/` and are compiled into the
 //! binary with [`include_str!`]. That keeps large MCP/Soroban sources editable as normal
 //! files instead of giant string literals in Rust. At `init` time we write those bytes
-//! (with `{{PROJECT_NAME}}` substitution) via [`crate::scaffold`].
-
-mod config;
-mod errors;
-mod scaffold;
+//! (with `{{PROJECT_NAME}}` substitution) via [`agent_devex::scaffold`].
 
 use std::io::IsTerminal;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 use anyhow::Result;
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{Parser, Subcommand};
 
-use crate::errors::AgentDevexError;
+use agent_devex::commands::{deploy::cmd_deploy, init::cmd_init};
+use agent_devex::config;
+use agent_devex::Lang;
 
 #[derive(Parser)]
 #[command(
@@ -47,12 +44,6 @@ enum Commands {
         #[arg(long, default_value = "testnet")]
         network: String,
     },
-}
-
-#[derive(Clone, Copy, ValueEnum)]
-enum Lang {
-    Ts,
-    Py,
 }
 
 fn ansi_logs_enabled() -> bool {
@@ -100,139 +91,4 @@ fn main() -> Result<()> {
             network,
         } => cmd_deploy(&project_dir, &network),
     }
-}
-
-fn cmd_init(project_name: &str, lang: Lang) -> Result<()> {
-    let root = PathBuf::from(project_name);
-    if root.exists() {
-        let empty = root
-            .read_dir()
-            .map_err(|source| AgentDevexError::IoError {
-                path: root.clone(),
-                source,
-            })?
-            .next()
-            .is_none();
-        if !empty {
-            return Err(AgentDevexError::DirectoryNotEmpty { path: root }.into());
-        }
-    }
-
-    scaffold::write_project(&root, project_name, lang)?;
-
-    eprintln!("Created {project_name}/");
-    eprintln!("  contracts/agent_pay_integration  Soroban + AgentPay/AgentGuard");
-    match lang {
-        Lang::Ts => {
-            eprintln!("  agent/                          TypeScript MCP server");
-            eprintln!(
-                "Next: cd {project_name} && stellar contract build --manifest-path contracts/agent_pay_integration/Cargo.toml"
-            );
-            eprintln!("      cd agent && npm install && npx tsx src/index.ts");
-        }
-        Lang::Py => {
-            eprintln!("  agent/                          Python MCP server");
-            eprintln!(
-                "Next: cd {project_name} && stellar contract build --manifest-path contracts/agent_pay_integration/Cargo.toml"
-            );
-            eprintln!("      cd agent && uv sync && uv run python src/server.py");
-        }
-    }
-    Ok(())
-}
-
-fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
-    let contract_dir = project_dir.join("contracts").join("agent_pay_integration");
-    if !contract_dir.join("Cargo.toml").is_file() {
-        return Err(AgentDevexError::ConfigNotFound {
-            path: contract_dir.join("Cargo.toml"),
-        }
-        .into());
-    }
-
-    run_stellar(
-        &["contract", "build"],
-        &contract_dir,
-        "stellar contract build",
-    )?;
-
-    let wasm = find_wasm(&contract_dir)?;
-    let source = std::env::var("STELLAR_ACCOUNT").ok();
-    match source {
-        None => {
-            eprintln!(
-                "Built {}. Set STELLAR_ACCOUNT and re-run deploy, or run:",
-                wasm.display()
-            );
-            eprintln!(
-                "  stellar contract deploy --network {network} --source-account <ACCOUNT> --wasm {}",
-                wasm.display()
-            );
-            Ok(())
-        }
-        Some(account) => {
-            let wasm_s = wasm.to_string_lossy();
-            run_stellar(
-                &[
-                    "contract",
-                    "deploy",
-                    "--network",
-                    network,
-                    "--source-account",
-                    &account,
-                    "--wasm",
-                    wasm_s.as_ref(),
-                ],
-                project_dir,
-                "stellar contract deploy",
-            )?;
-            Ok(())
-        }
-    }
-}
-
-fn run_stellar(args: &[&str], cwd: &Path, label: &str) -> Result<(), AgentDevexError> {
-    let status = Command::new("stellar")
-        .args(args)
-        .current_dir(cwd)
-        .status()
-        .map_err(|source| AgentDevexError::StellarSpawn {
-            label: label.to_string(),
-            source,
-        })?;
-    if !status.success() {
-        return Err(AgentDevexError::StellarFailed {
-            label: label.to_string(),
-            status,
-        });
-    }
-    Ok(())
-}
-
-fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
-    let target = contract_dir.join("target").join("wasm32-unknown-unknown");
-    let mut found = Vec::new();
-    for profile in ["release", "debug"] {
-        let dir = target.join(profile);
-        if dir.is_dir() {
-            for entry in std::fs::read_dir(&dir).map_err(|source| AgentDevexError::IoError {
-                path: dir.clone(),
-                source,
-            })? {
-                let path = entry
-                    .map_err(|source| AgentDevexError::IoError {
-                        path: dir.clone(),
-                        source,
-                    })?
-                    .path();
-                if path.extension().and_then(|e| e.to_str()) == Some("wasm") {
-                    found.push(path);
-                }
-            }
-        }
-    }
-    found
-        .into_iter()
-        .next()
-        .ok_or(AgentDevexError::WasmNotFound)
 }
