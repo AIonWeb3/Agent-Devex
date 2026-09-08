@@ -13,11 +13,13 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
         return Err(AgentDevexError::ConfigNotFound { path: manifest }.into());
     }
 
+    tracing::info!(project = %project_dir.display(), network, "building Soroban contract");
     process::run_stellar(
         &["contract", "build"],
         &contract_dir,
         "stellar contract build",
     )?;
+    tracing::info!("contract build finished");
 
     let wasm = find_wasm(&contract_dir)?;
     let source = std::env::var("STELLAR_ACCOUNT").ok();
@@ -35,6 +37,7 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
         }
         Some(account) => {
             let wasm_s = wasm.to_string_lossy();
+            tracing::info!(account, "deploying wasm to network");
             process::run_stellar(
                 &[
                     "contract",
