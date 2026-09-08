@@ -6,6 +6,7 @@
 pub mod commands;
 pub mod config;
 pub mod errors;
+pub mod paths;
 pub mod scaffold;
 
 /// Supported languages for the generated MCP server.
