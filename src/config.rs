@@ -18,7 +18,10 @@ pub const AGENT_TOML_FILE_NAME: &str = "agent.toml";
 
 /// Project-level configuration stored in [`AGENT_TOML_FILE_NAME`].
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct AgentConfig {}
+pub struct AgentConfig {
+    /// Stellar network name (`testnet` or `mainnet`).
+    pub network: String,
+}
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct AgentDevexConfig {
