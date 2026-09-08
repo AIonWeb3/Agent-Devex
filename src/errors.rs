@@ -75,3 +75,12 @@ pub enum AgentDevexError {
     #[error("validation failed: {0}")]
     ValidationFailed(String),
 }
+
+impl From<std::io::Error> for AgentDevexError {
+    fn from(source: std::io::Error) -> Self {
+        Self::IoError {
+            path: PathBuf::from("<unknown>"),
+            source,
+        }
+    }
+}
