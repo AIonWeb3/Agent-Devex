@@ -133,6 +133,30 @@ footer {
   padding: 1.1rem 1.2rem;
 }
 
+.card label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+  color: var(--muted);
+}
+
+.card input {
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #31405f;
+  background: #0b1220;
+  color: var(--fg);
+}
+
+#form-status[data-state="error"] {
+  color: #ffb4b4;
+}
+
+#form-status[data-state="ok"] {
+  color: #9dffc2;
+}
+
 .empty {
   border: 1px dashed #3a4d73;
   border-radius: 16px;

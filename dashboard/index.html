@@ -64,6 +64,30 @@
           </article>
         </div>
       </section>
+      <section id="try">
+        <h2>Preview the MCP tool</h2>
+        <p>This form does not send a transaction. It validates the same fields <code>settle_and_execute</code> expects.</p>
+        <form id="demo-form" class="card" novalidate>
+          <label>
+            Prompt
+            <input name="prompt" required placeholder="Settle fee then unlock listing 42" />
+          </label>
+          <label>
+            Agent address
+            <input name="agent_address" required minlength="56" placeholder="G..." />
+          </label>
+          <label>
+            Action id
+            <input name="action_id" required pattern="[A-Za-z0-9_]+" placeholder="unlock_listing" />
+          </label>
+          <label>
+            Amount (i128 string)
+            <input name="amount" required inputmode="numeric" placeholder="100" />
+          </label>
+          <button class="btn primary" type="submit">Validate payload</button>
+          <p id="form-status" role="status"></p>
+        </form>
+      </section>
       <section id="onboarding">
         <h2>Onboarding checklist</h2>
         <ol class="steps">
@@ -85,5 +109,6 @@
     <footer>
       <p>MIT · Built for client demonstrations of AI × Web3 on Stellar.</p>
     </footer>
+    <script src="app.js"></script>
   </body>
 </html>
