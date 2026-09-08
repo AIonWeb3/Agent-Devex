@@ -44,6 +44,9 @@ pub fn cmd_validate(project_dir: &Path) -> Result<()> {
     if !project_dir.join(".gitignore").is_file() {
         issues.push("missing .gitignore".to_string());
     }
+    if !project_dir.join(config::CONFIG_FILE_NAME).is_file() {
+        issues.push("missing agent-devex.toml".to_string());
+    }
 
     if let Some(cfg) = config::load_optional(project_dir)? {
         if let Some(parsed) = cfg.parsed_default_lang() {
