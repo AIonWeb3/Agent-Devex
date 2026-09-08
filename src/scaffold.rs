@@ -9,6 +9,7 @@ use std::path::Path;
 use crate::Lang;
 use crate::errors::AgentDevexError;
 
+/// Writes contents to a file, creating parent directories if necessary.
 fn write_file(path: &Path, contents: &str) -> Result<(), AgentDevexError> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|source| AgentDevexError::IoError {
@@ -22,10 +23,12 @@ fn write_file(path: &Path, contents: &str) -> Result<(), AgentDevexError> {
     })
 }
 
+/// Substitutes template variables. Currently only replaces `{{PROJECT_NAME}}`.
 fn subst(template: &str, project_name: &str) -> String {
     template.replace("{{PROJECT_NAME}}", project_name)
 }
 
+/// Writes all project files and templates to the target directory.
 pub fn write_project(root: &Path, project_name: &str, lang: Lang) -> Result<(), AgentDevexError> {
     write_file(
         &root.join("README.md"),

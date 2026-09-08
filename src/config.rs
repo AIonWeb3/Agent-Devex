@@ -1,5 +1,7 @@
-//! Optional `agent-devex.toml` in the working directory (`serde` + `toml`).
-
+//! Configuration management for Agent-Devex.
+//!
+//! Handles loading and parsing of the optional `agent-devex.toml` file
+//! in the working directory using `serde` and `toml`.
 use std::fs;
 use std::path::Path;
 
