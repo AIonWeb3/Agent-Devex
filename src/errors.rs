@@ -59,6 +59,16 @@ pub enum AgentDevexError {
         source: Box<toml::de::Error>,
     },
 
+    #[error("failed to parse config {}: {source}", .path.display())]
+    ConfigParseError {
+        path: PathBuf,
+        #[source]
+        source: Box<toml::de::Error>,
+    },
+
+    #[error("failed to serialize configuration: {0}")]
+    ConfigSerializationError(String),
+
     #[error("invalid config value for {key}: {value}")]
     InvalidConfigValue { key: String, value: String },
 
