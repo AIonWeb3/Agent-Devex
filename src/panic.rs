@@ -6,11 +6,15 @@
 /// Issue tracker used in panic reports.
 pub const PANIC_HOMEPAGE: &str = "https://github.com/AIonWeb3/Agent-Devex";
 
-/// Build `human-panic` metadata (authors, homepage).
+/// Support line included in the human-panic dump.
+pub const PANIC_SUPPORT: &str = "- Open an issue: https://github.com/AIonWeb3/Agent-Devex/issues";
+
+/// Build `human-panic` metadata (authors, homepage, support).
 pub fn panic_metadata() -> human_panic::Metadata {
     human_panic::metadata!()
         .authors("AIonWeb3")
         .homepage(PANIC_HOMEPAGE)
+        .support(PANIC_SUPPORT)
 }
 
 /// Install the process-wide human-panic hook (release dumps; debug keeps default).
