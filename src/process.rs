@@ -19,12 +19,13 @@ pub fn run_in_dir(
         .args(args)
         .current_dir(cwd)
         .status()
-        .map_err(|source| AgentDevexError::StellarSpawn {
+        .map_err(|source| AgentDevexError::ToolSpawn {
+            program: program.to_string(),
             label: label.to_string(),
             source,
         })?;
     if !status.success() {
-        return Err(AgentDevexError::StellarFailed {
+        return Err(AgentDevexError::ToolFailed {
             label: label.to_string(),
             status,
         });

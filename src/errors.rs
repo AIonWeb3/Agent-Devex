@@ -21,15 +21,22 @@ pub enum AgentDevexError {
     #[error("directory {} already exists and is not empty", .path.display())]
     DirectoryNotEmpty { path: PathBuf },
 
-    #[error("{label} failed to start — is stellar-cli installed and on PATH?")]
-    StellarSpawn {
+    #[error("{label} failed to start — is `{program}` installed and on PATH?")]
+    ToolSpawn {
+        program: String,
         label: String,
         #[source]
         source: std::io::Error,
     },
 
     #[error("{label} exited with {status}")]
-    StellarFailed { label: String, status: ExitStatus },
+    ToolFailed { label: String, status: ExitStatus },
+
+    #[error("required tool `{program}` was not found on PATH")]
+    ToolMissing { program: String },
+
+    #[error("invalid project name `{name}`: {reason}")]
+    InvalidProjectName { name: String, reason: String },
 
     #[error("no .wasm after build — check stellar contract build output")]
     WasmNotFound,
@@ -43,4 +50,7 @@ pub enum AgentDevexError {
 
     #[error("invalid config value for {key}: {value}")]
     InvalidConfigValue { key: String, value: String },
+
+    #[error("validation failed: {0}")]
+    ValidationFailed(String),
 }
