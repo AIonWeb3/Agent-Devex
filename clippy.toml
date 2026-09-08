@@ -1,0 +1,4 @@
+# Agent-Devex Clippy Configuration
+# https://doc.rust-lang.org/clippy/configuration.html
+
+msrv = "1.85"
