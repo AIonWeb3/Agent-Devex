@@ -6,6 +6,8 @@
 pub mod commands;
 pub mod config;
 pub mod errors;
+pub mod fsutil;
+pub mod output;
 pub mod paths;
 pub mod process;
 pub mod scaffold;

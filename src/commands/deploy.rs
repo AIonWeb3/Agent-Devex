@@ -2,6 +2,7 @@ use anyhow::Result;
 use std::path::{Path, PathBuf};
 
 use crate::errors::AgentDevexError;
+use crate::output;
 use crate::paths;
 use crate::process;
 
@@ -22,14 +23,14 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
     let source = std::env::var("STELLAR_ACCOUNT").ok();
     match source {
         None => {
-            eprintln!(
+            output::warn(format!(
                 "Built {}. Set STELLAR_ACCOUNT and re-run deploy, or run:",
                 wasm.display()
-            );
-            eprintln!(
+            ));
+            output::hint(format!(
                 "  stellar contract deploy --network {network} --source-account <ACCOUNT> --wasm {}",
                 wasm.display()
-            );
+            ));
             Ok(())
         }
         Some(account) => {
