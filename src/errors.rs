@@ -99,3 +99,46 @@ impl From<std::io::Error> for AgentDevexError {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn display_config_not_found() {
+        let err = AgentDevexError::ConfigNotFound {
+            path: PathBuf::from("agent.toml"),
+        };
+        assert!(err.to_string().contains("agent.toml"));
+    }
+
+    #[test]
+    fn from_io_error() {
+        let io = std::io::Error::other("disk full");
+        let err = AgentDevexError::from(io);
+        match err {
+            AgentDevexError::IoError { source, .. } => {
+                assert_eq!(source.to_string(), "disk full");
+            }
+            other => panic!("unexpected variant: {other:?}"),
+        }
+    }
+
+    #[test]
+    fn invalid_network_and_port_display() {
+        let net = AgentDevexError::InvalidNetwork {
+            network: "localnet".into(),
+        };
+        assert!(net.to_string().contains("localnet"));
+        let port = AgentDevexError::InvalidPort { port: 0 };
+        assert!(port.to_string().contains('0'));
+    }
+
+    #[test]
+    fn project_already_exists_display() {
+        let err = AgentDevexError::ProjectAlreadyExists {
+            path: PathBuf::from("demo"),
+        };
+        assert!(err.to_string().contains("demo"));
+    }
+}
