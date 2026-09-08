@@ -13,6 +13,7 @@ pub mod output;
 pub mod paths;
 pub mod process;
 pub mod scaffold;
+pub mod secrets;
 pub mod state;
 
 /// Supported languages for the generated MCP server.
