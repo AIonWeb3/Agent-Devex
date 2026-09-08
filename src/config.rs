@@ -61,7 +61,7 @@ impl AgentConfig {
     /// Deserialize `agent.toml` into [`AgentConfig`].
     pub fn load(project_dir: &Path) -> crate::errors::Result<Self> {
         let raw = Self::read_raw(project_dir)?;
-        toml::from_str(&raw).map_err(|source| AgentDevexError::InvalidToml {
+        toml::from_str(&raw).map_err(|source| AgentDevexError::ConfigParseError {
             path: Self::path(project_dir),
             source: Box::new(source),
         })
