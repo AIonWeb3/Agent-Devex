@@ -20,7 +20,8 @@ dialoguer = "0.11"
 dotenvy = "0.15"
 # Release-build crash reports (installed from the binary entrypoint).
 human-panic = { version = "2.0.8" }
-serde = "1.0.229"
+# agent.toml / agent-devex.toml serialization
+serde = { version = "1.0.229" }
 serde_derive = "1.0.229"
 thiserror = "2.0.20"
 toml = "0.8.23"
