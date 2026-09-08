@@ -26,6 +26,8 @@ cargo test
 cargo run -- --help
 ```
 
+Pitch materials: [docs/PITCH.md](docs/PITCH.md), [docs/DEMO.md](docs/DEMO.md).
+
 ## Development Workflow
 
 1. **Fork** the repository
