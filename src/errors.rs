@@ -40,4 +40,7 @@ pub enum AgentDevexError {
         #[source]
         source: Box<toml::de::Error>,
     },
+
+    #[error("invalid config value for {key}: {value}")]
+    InvalidConfigValue { key: String, value: String },
 }
