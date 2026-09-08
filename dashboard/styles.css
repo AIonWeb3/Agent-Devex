@@ -1,0 +1,88 @@
+:root {
+  --bg: #070b14;
+  --fg: #e8eefc;
+  --muted: #9aa8c7;
+  --accent: #6ea8ff;
+  --accent-2: #7c5cff;
+  --card: #111827;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: radial-gradient(1200px 600px at 10% -10%, #1b2a4a 0%, var(--bg) 55%);
+  color: var(--fg);
+  line-height: 1.5;
+}
+
+.hero,
+main,
+footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.eyebrow {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.1;
+  margin: 0.3rem 0 1rem;
+}
+
+.lede {
+  color: var(--muted);
+  font-size: 1.15rem;
+  max-width: 42rem;
+}
+
+.cta-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  padding: 0.7rem 1.1rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.btn.primary {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #061018;
+}
+
+.btn.ghost {
+  border: 1px solid #31405f;
+  color: var(--fg);
+}
+
+code {
+  font-family: ui-monospace, Consolas, monospace;
+  color: #c5dcff;
+}
+
+.steps {
+  background: var(--card);
+  border: 1px solid #1f2a44;
+  border-radius: 16px;
+  padding: 1.25rem 1.25rem 1.25rem 2.25rem;
+}
+
+footer {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
