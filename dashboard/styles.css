@@ -133,8 +133,11 @@ footer {
   padding: 1.1rem 1.2rem;
 }
 
-.card h3 {
-  margin-top: 0;
+.empty {
+  border: 1px dashed #3a4d73;
+  border-radius: 16px;
+  padding: 1.25rem;
+  background: rgba(110, 168, 255, 0.06);
 }
 
 @media (max-width: 640px) {
