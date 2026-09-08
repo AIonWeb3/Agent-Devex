@@ -207,3 +207,27 @@ pub fn load_optional(dir: &Path) -> Result<Option<AgentDevexConfig>, AgentDevexE
 pub fn load_or_default(dir: &Path) -> Result<AgentDevexConfig, AgentDevexError> {
     Ok(load_optional(dir)?.unwrap_or_default())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn default_save_load_round_trip() {
+        let tmp = tempfile::tempdir().unwrap();
+        let original = AgentConfig::default();
+        original.save(tmp.path()).unwrap();
+        let loaded = AgentConfig::load(tmp.path()).unwrap();
+        assert_eq!(original, loaded);
+        assert_eq!(loaded.network, DEFAULT_NETWORK);
+        assert_eq!(loaded.mcp.port, DEFAULT_MCP_PORT);
+        assert!(loaded.contract_ids.agent_pay.is_none());
+    }
+
+    #[test]
+    fn load_missing_is_config_not_found() {
+        let tmp = tempfile::tempdir().unwrap();
+        let err = AgentConfig::load(tmp.path()).unwrap_err();
+        assert!(matches!(err, AgentDevexError::ConfigNotFound { .. }));
+    }
+}
