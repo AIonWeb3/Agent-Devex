@@ -69,10 +69,8 @@ impl AgentConfig {
 
     /// Serialize this config to pretty TOML.
     pub fn to_toml(&self) -> crate::errors::Result<String> {
-        toml::to_string_pretty(self).map_err(|source| AgentDevexError::InvalidConfigValue {
-            key: AGENT_TOML_FILE_NAME.to_string(),
-            value: source.to_string(),
-        })
+        toml::to_string_pretty(self)
+            .map_err(|source| AgentDevexError::ConfigSerializationError(source.to_string()))
     }
 
     /// Create `agent.toml` (and parent directories) if they do not exist.
