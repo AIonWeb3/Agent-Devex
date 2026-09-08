@@ -19,6 +19,9 @@ pub const AGENT_TOML_FILE_NAME: &str = "agent.toml";
 /// Default local MCP listen port used when `agent.toml` omits a value.
 pub const DEFAULT_MCP_PORT: u16 = 3000;
 
+/// Safe development network for newly initialized projects.
+pub const DEFAULT_NETWORK: &str = "testnet";
+
 /// Project-level configuration stored in [`AGENT_TOML_FILE_NAME`].
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AgentConfig {
@@ -33,7 +36,7 @@ pub struct AgentConfig {
 impl Default for AgentConfig {
     fn default() -> Self {
         Self {
-            network: String::new(),
+            network: DEFAULT_NETWORK.to_string(),
             contract_ids: ContractIds::default(),
             mcp: McpConfig {
                 lang: None,
