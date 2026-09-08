@@ -19,6 +19,39 @@ body {
   line-height: 1.5;
 }
 
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #1f2a44;
+  position: sticky;
+  top: 0;
+  background: rgba(7, 11, 20, 0.92);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.brand {
+  color: var(--fg);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--fg);
+}
+
 .hero,
 main,
 footer {
