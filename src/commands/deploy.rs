@@ -36,7 +36,7 @@ pub fn cmd_deploy(project_dir: &Path, network: Option<&str>) -> Result<()> {
         Some(account) => {
             let wasm_s = wasm.to_string_lossy();
             tracing::info!(account, "deploying wasm to network");
-            process::run_stellar(
+            let out = process::run_stellar_output(
                 &[
                     "contract",
                     "deploy",
@@ -50,6 +50,12 @@ pub fn cmd_deploy(project_dir: &Path, network: Option<&str>) -> Result<()> {
                 project_dir,
                 "stellar contract deploy",
             )?;
+            if !out.trim().is_empty() {
+                crate::output::hint(out.trim());
+            }
+            if let Some(id) = process::parse_contract_id(&out) {
+                crate::output::success(format!("Contract id {id}"));
+            }
             crate::next_steps::after_deploy_success(&network);
             Ok(())
         }
