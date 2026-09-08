@@ -107,11 +107,25 @@ fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
             }
         }
     }
-    found.sort_by_key(|path| {
+    let preferred: Vec<_> = found
+        .iter()
+        .filter(|p| {
+            p.file_stem()
+                .and_then(|s| s.to_str())
+                .is_some_and(|s| s.contains("agent_pay"))
+        })
+        .cloned()
+        .collect();
+    let mut pool = if preferred.is_empty() {
+        found
+    } else {
+        preferred
+    };
+    pool.sort_by_key(|path| {
         std::fs::metadata(path)
             .and_then(|m| m.modified())
             .ok()
             .unwrap_or(std::time::SystemTime::UNIX_EPOCH)
     });
-    found.pop().ok_or(AgentDevexError::WasmNotFound)
+    pool.pop().ok_or(AgentDevexError::WasmNotFound)
 }
