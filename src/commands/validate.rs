@@ -38,6 +38,12 @@ pub fn cmd_validate(project_dir: &Path) -> Result<()> {
     if !readme.is_file() {
         issues.push("missing project README.md".to_string());
     }
+    if !project_dir.join(".env.example").is_file() {
+        issues.push("missing .env.example".to_string());
+    }
+    if !project_dir.join(".gitignore").is_file() {
+        issues.push("missing .gitignore".to_string());
+    }
 
     if let Some(cfg) = config::load_optional(project_dir)? {
         if let Some(parsed) = cfg.parsed_default_lang() {

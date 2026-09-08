@@ -20,6 +20,14 @@ pub fn write_project(root: &Path, project_name: &str, lang: Lang) -> Result<(), 
         &root.join("README.md"),
         &subst(include_str!("../templates/project/README.md"), project_name),
     )?;
+    fsutil::write_file(
+        &root.join(".env.example"),
+        include_str!("../templates/project/.env.example"),
+    )?;
+    fsutil::write_file(
+        &root.join(".gitignore"),
+        include_str!("../templates/project/.gitignore"),
+    )?;
 
     fsutil::write_file(
         &root
