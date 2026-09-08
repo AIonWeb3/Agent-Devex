@@ -1,0 +1,17 @@
+{
+  "story": "Marketplace agent pays a settlement then unlocks a listing",
+  "network": "testnet",
+  "sample_tool_call": {
+    "tool": "settle_and_execute",
+    "arguments": {
+      "prompt": "Charge the listing fee and unlock listing 42",
+      "agent_address": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "action_id": "unlock_listing",
+      "amount": "100"
+    }
+  },
+  "kpis": {
+    "time_to_scaffold_minutes": 2,
+    "manual_boilerplate_days_saved": 10
+  }
+}
