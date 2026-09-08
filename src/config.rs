@@ -16,6 +16,10 @@ pub const CONFIG_FILE_NAME: &str = "agent-devex.toml";
 /// Project configuration file written by `init` and read by compile/deploy/run.
 pub const AGENT_TOML_FILE_NAME: &str = "agent.toml";
 
+/// Project-level configuration stored in [`AGENT_TOML_FILE_NAME`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AgentConfig {}
+
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct AgentDevexConfig {
     /// Default Stellar network name for `deploy` (overridden by `--network`).
