@@ -48,6 +48,12 @@ impl AgentConfig {
     pub fn path(project_dir: &Path) -> PathBuf {
         project_dir.join(AGENT_TOML_FILE_NAME)
     }
+
+    /// Read the raw TOML bytes from `agent.toml`.
+    pub fn read_raw(project_dir: &Path) -> crate::errors::Result<String> {
+        let path = Self::path(project_dir);
+        fs::read_to_string(&path).map_err(|source| AgentDevexError::IoError { path, source })
+    }
 }
 
 /// Named contract ids for a generated project.
