@@ -1,5 +1,7 @@
-//! Typed failure cases for the Agent-Devex CLI.
-
+//! Error types and handling for the Agent-Devex CLI.
+//!
+//! Uses `thiserror` to define typed, structured errors for programmatic handling
+//! and user-friendly display.
 use std::path::PathBuf;
 use std::process::ExitStatus;
 
