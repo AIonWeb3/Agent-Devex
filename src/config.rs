@@ -20,7 +20,7 @@ pub const AGENT_TOML_FILE_NAME: &str = "agent.toml";
 pub const DEFAULT_MCP_PORT: u16 = 3000;
 
 /// Project-level configuration stored in [`AGENT_TOML_FILE_NAME`].
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct AgentConfig {
     /// Stellar network name (`testnet` or `mainnet`).
     pub network: String,
@@ -31,14 +31,14 @@ pub struct AgentConfig {
 }
 
 /// Named contract ids for a generated project.
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
 pub struct ContractIds {
     /// AgentPay / agent_pay_integration contract id when known.
     pub agent_pay: Option<String>,
 }
 
 /// MCP-related project settings.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct McpConfig {
     /// MCP language hint (`ts` or `py`) when set.
     pub lang: Option<String>,
