@@ -21,3 +21,20 @@ pub fn panic_metadata() -> human_panic::Metadata {
 pub fn install_panic_handler() {
     human_panic::setup_panic!(panic_metadata());
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn panic_report_context_is_configured() {
+        assert!(PANIC_HOMEPAGE.starts_with("https://"));
+        assert!(PANIC_SUPPORT.contains("issues"));
+        let _meta = panic_metadata();
+    }
+
+    #[test]
+    fn install_panic_handler_is_safe_to_call() {
+        install_panic_handler();
+    }
+}
