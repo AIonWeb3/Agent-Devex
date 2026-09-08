@@ -10,6 +10,7 @@ pub mod fsutil;
 pub mod names;
 pub mod next_steps;
 pub mod output;
+pub mod panic;
 pub mod paths;
 pub mod process;
 pub mod scaffold;
