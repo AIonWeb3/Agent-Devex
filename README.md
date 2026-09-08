@@ -314,16 +314,33 @@ MIT © [AIonWeb3](https://github.com/AIonWeb3)
 
 ## 🗺️ Roadmap
 
-- [x] CLI scaffolding (init + deploy)
+- [x] CLI scaffolding (`init` + `deploy`)
 - [x] TypeScript and Python MCP server templates
-- [x] GitHub Actions CI
-- [ ] Soroban contract test templates
-- [ ] Rust MCP server template
-- [ ] Web dashboard for demos
+- [x] `validate`, `doctor`, `status`
+- [x] Interactive `init` and project config
+- [x] GitHub Actions CI (fmt, clippy, tests)
+- [x] Static pitch dashboard
+- [ ] Published AgentPay crate (replace local interfaces)
 - [ ] Template update/migration system
 - [ ] Plugin system for custom contract interfaces
 - [ ] Multi-contract project support
-- [ ] Mainnet deployment guides
+- [ ] Audited mainnet deployment guides
+
+## 📚 More documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [docs/DEMO.md](docs/DEMO.md) | Client walkthrough |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Binary, contract, MCP hosting |
+| [docs/PITCH.md](docs/PITCH.md) | Problem / solution / buyers |
+| [dashboard/](dashboard/) | Visual pitch site |
+
+## ⚠️ Known limitations
+
+- AgentPay / AgentGuard in generated contracts are **local interfaces**, not a published protocol.
+- `deploy` requires `stellar-cli` and a funded account; without `STELLAR_ACCOUNT` it prints the command after build.
+- Dashboard MCP form does **not** submit chain transactions (validation only).
+- Secret keys must never be committed; use `.env` locally.
 
 ---
 
