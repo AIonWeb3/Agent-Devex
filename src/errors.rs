@@ -72,6 +72,15 @@ pub enum AgentDevexError {
     #[error("invalid config value for {key}: {value}")]
     InvalidConfigValue { key: String, value: String },
 
+    #[error("invalid network `{network}` (expected testnet or mainnet)")]
+    InvalidNetwork { network: String },
+
+    #[error("invalid MCP port {port}")]
+    InvalidPort { port: u32 },
+
+    #[error("invalid CLI argument `{argument}`: {reason}")]
+    InvalidCli { argument: String, reason: String },
+
     #[error("validation failed: {0}")]
     ValidationFailed(String),
 }
