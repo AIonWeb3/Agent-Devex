@@ -43,8 +43,8 @@ enum Commands {
     Deploy {
         #[arg(long, default_value = ".")]
         project_dir: PathBuf,
-        #[arg(long, default_value = "testnet")]
-        network: String,
+        #[arg(long)]
+        network: Option<String>,
     },
     /// Check that a generated project has the expected contract and MCP layout.
     Validate {
@@ -98,7 +98,7 @@ fn main() -> Result<()> {
         Commands::Deploy {
             project_dir,
             network,
-        } => cmd_deploy(&project_dir, &network),
+        } => cmd_deploy(&project_dir, network.as_deref()),
         Commands::Validate { project_dir } => cmd_validate(&project_dir),
         Commands::Doctor => cmd_doctor(),
     }

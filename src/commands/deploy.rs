@@ -2,18 +2,22 @@ use anyhow::Result;
 use std::path::{Path, PathBuf};
 
 use crate::errors::AgentDevexError;
-use crate::output;
 use crate::paths;
 use crate::process;
 
-pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
+pub fn cmd_deploy(project_dir: &Path, network: Option<&str>) -> Result<()> {
+    let cfg = crate::config::load_or_default(project_dir)?;
+    let network = network
+        .map(str::to_string)
+        .or(cfg.network)
+        .unwrap_or_else(|| "testnet".to_string());
     let contract_dir = paths::contract_crate_dir(project_dir);
     let manifest = paths::contract_manifest(project_dir);
     if !manifest.is_file() {
         return Err(AgentDevexError::ConfigNotFound { path: manifest }.into());
     }
 
-    tracing::info!(project = %project_dir.display(), network, "building Soroban contract");
+    tracing::info!(project = %project_dir.display(), network = %network, "building Soroban contract");
     process::run_stellar(
         &["contract", "build"],
         &contract_dir,
@@ -25,14 +29,7 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
     let source = std::env::var("STELLAR_ACCOUNT").ok();
     match source {
         None => {
-            output::warn(format!(
-                "Built {}. Set STELLAR_ACCOUNT and re-run deploy, or run:",
-                wasm.display()
-            ));
-            output::hint(format!(
-                "  stellar contract deploy --network {network} --source-account <ACCOUNT> --wasm {}",
-                wasm.display()
-            ));
+            crate::next_steps::after_deploy_without_account(&wasm, &network);
             Ok(())
         }
         Some(account) => {
@@ -43,7 +40,7 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
                     "contract",
                     "deploy",
                     "--network",
-                    network,
+                    network.as_str(),
                     "--source-account",
                     &account,
                     "--wasm",
@@ -52,6 +49,7 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
                 project_dir,
                 "stellar contract deploy",
             )?;
+            crate::next_steps::after_deploy_success(&network);
             Ok(())
         }
     }
