@@ -11,6 +11,7 @@ pub fn cmd_deploy(project_dir: &Path, network: Option<&str>) -> Result<()> {
         .map(str::to_string)
         .or(cfg.network)
         .unwrap_or_else(|| "testnet".to_string());
+    validate_network_name(&network)?;
     let contract_dir = paths::contract_crate_dir(project_dir);
     let manifest = paths::contract_manifest(project_dir);
     if !manifest.is_file() {
@@ -55,6 +56,20 @@ pub fn cmd_deploy(project_dir: &Path, network: Option<&str>) -> Result<()> {
     }
 }
 
+fn validate_network_name(network: &str) -> Result<(), AgentDevexError> {
+    if network.is_empty()
+        || !network
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+    {
+        return Err(AgentDevexError::InvalidConfigValue {
+            key: "network".to_string(),
+            value: network.to_string(),
+        });
+    }
+    Ok(())
+}
+
 fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
     let target = paths::wasm_target_root(contract_dir);
     let mut found = Vec::new();
@@ -77,8 +92,11 @@ fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
             }
         }
     }
-    found
-        .into_iter()
-        .next()
-        .ok_or(AgentDevexError::WasmNotFound)
+    found.sort_by_key(|path| {
+        std::fs::metadata(path)
+            .and_then(|m| m.modified())
+            .ok()
+            .unwrap_or(std::time::SystemTime::UNIX_EPOCH)
+    });
+    found.pop().ok_or(AgentDevexError::WasmNotFound)
 }
