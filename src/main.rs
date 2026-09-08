@@ -12,7 +12,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 
 use agent_devex::Lang;
-use agent_devex::commands::{deploy::cmd_deploy, init::cmd_init};
+use agent_devex::commands::{deploy::cmd_deploy, init::cmd_init, validate::cmd_validate};
 use agent_devex::config;
 
 #[derive(Parser)]
@@ -43,6 +43,11 @@ enum Commands {
         project_dir: PathBuf,
         #[arg(long, default_value = "testnet")]
         network: String,
+    },
+    /// Check that a generated project has the expected contract and MCP layout.
+    Validate {
+        #[arg(long, default_value = ".")]
+        project_dir: PathBuf,
     },
 }
 
@@ -90,5 +95,6 @@ fn main() -> Result<()> {
             project_dir,
             network,
         } => cmd_deploy(&project_dir, &network),
+        Commands::Validate { project_dir } => cmd_validate(&project_dir),
     }
 }
