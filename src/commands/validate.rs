@@ -48,6 +48,24 @@ pub fn cmd_validate(project_dir: &Path) -> Result<()> {
         issues.push("missing agent-devex.toml".to_string());
     }
 
+    let env_example = project_dir.join(".env.example");
+    if env_example.is_file() {
+        let raw =
+            std::fs::read_to_string(&env_example).map_err(|source| AgentDevexError::IoError {
+                path: env_example.clone(),
+                source,
+            })?;
+        for key in [
+            "STELLAR_SECRET_KEY",
+            "AGENTPAY_CONTRACT_ID",
+            "STELLAR_ACCOUNT",
+        ] {
+            if !raw.contains(key) {
+                issues.push(format!(".env.example missing {key}"));
+            }
+        }
+    }
+
     if let Some(cfg) = config::load_optional(project_dir)? {
         if let Some(parsed) = cfg.parsed_default_lang() {
             parsed?;
