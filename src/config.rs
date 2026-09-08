@@ -30,6 +30,19 @@ pub struct AgentConfig {
     pub mcp: McpConfig,
 }
 
+impl Default for AgentConfig {
+    fn default() -> Self {
+        Self {
+            network: String::new(),
+            contract_ids: ContractIds::default(),
+            mcp: McpConfig {
+                lang: None,
+                port: DEFAULT_MCP_PORT,
+            },
+        }
+    }
+}
+
 /// Named contract ids for a generated project.
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ContractIds {
