@@ -23,6 +23,8 @@ pub struct AgentConfig {
     pub network: String,
     /// Optional on-chain contract identifiers (never secret keys).
     pub contract_ids: ContractIds,
+    /// Local MCP server settings.
+    pub mcp: McpConfig,
 }
 
 /// Named contract ids for a generated project.
@@ -30,6 +32,13 @@ pub struct AgentConfig {
 pub struct ContractIds {
     /// AgentPay / agent_pay_integration contract id when known.
     pub agent_pay: Option<String>,
+}
+
+/// MCP-related project settings.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct McpConfig {
+    /// MCP language hint (`ts` or `py`) when set.
+    pub lang: Option<String>,
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
