@@ -32,6 +32,12 @@ pub enum AgentDevexError {
     #[error("directory {} already exists and is not empty", .path.display())]
     DirectoryNotEmpty { path: PathBuf },
 
+    #[error("project already exists at {}", .path.display())]
+    ProjectAlreadyExists { path: PathBuf },
+
+    #[error("failed to create project at {}: {reason}", .path.display())]
+    ProjectCreationError { path: PathBuf, reason: String },
+
     #[error("{label} failed to start — is `{program}` installed and on PATH?")]
     ToolSpawn {
         program: String,
