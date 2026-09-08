@@ -56,5 +56,7 @@ mod tests {
         assert!(validate_project_name("").is_err());
         assert!(validate_project_name("../secret").is_err());
         assert!(validate_project_name("has space").is_err());
+        assert!(validate_project_name("9lives").is_err());
+        assert!(validate_project_name("-lead").is_err());
     }
 }
