@@ -74,6 +74,24 @@ impl AgentConfig {
             value: source.to_string(),
         })
     }
+
+    /// Create `agent.toml` (and parent directories) if they do not exist.
+    pub fn create_file(project_dir: &Path) -> crate::errors::Result<PathBuf> {
+        let path = Self::path(project_dir);
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent).map_err(|source| AgentDevexError::IoError {
+                path: parent.to_path_buf(),
+                source,
+            })?;
+        }
+        if !path.exists() {
+            fs::File::create(&path).map_err(|source| AgentDevexError::IoError {
+                path: path.clone(),
+                source,
+            })?;
+        }
+        Ok(path)
+    }
 }
 
 /// Named contract ids for a generated project.
