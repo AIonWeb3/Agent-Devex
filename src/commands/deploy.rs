@@ -1,9 +1,9 @@
 use anyhow::Result;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 use crate::errors::AgentDevexError;
 use crate::paths;
+use crate::process;
 
 pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
     let contract_dir = paths::contract_crate_dir(project_dir);
@@ -12,7 +12,7 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
         return Err(AgentDevexError::ConfigNotFound { path: manifest }.into());
     }
 
-    run_stellar(
+    process::run_stellar(
         &["contract", "build"],
         &contract_dir,
         "stellar contract build",
@@ -34,7 +34,7 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
         }
         Some(account) => {
             let wasm_s = wasm.to_string_lossy();
-            run_stellar(
+            process::run_stellar(
                 &[
                     "contract",
                     "deploy",
@@ -51,24 +51,6 @@ pub fn cmd_deploy(project_dir: &Path, network: &str) -> Result<()> {
             Ok(())
         }
     }
-}
-
-fn run_stellar(args: &[&str], cwd: &Path, label: &str) -> Result<(), AgentDevexError> {
-    let status = Command::new("stellar")
-        .args(args)
-        .current_dir(cwd)
-        .status()
-        .map_err(|source| AgentDevexError::StellarSpawn {
-            label: label.to_string(),
-            source,
-        })?;
-    if !status.success() {
-        return Err(AgentDevexError::StellarFailed {
-            label: label.to_string(),
-            status,
-        });
-    }
-    Ok(())
 }
 
 fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
