@@ -119,3 +119,20 @@ footer {
   color: var(--muted);
   font-size: 0.9rem;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid #1f2a44;
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem;
+}
+
+.card h3 {
+  margin-top: 0;
+}
