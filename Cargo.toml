@@ -24,7 +24,7 @@ human-panic = { version = "2.0.8" }
 serde = { version = "1.0.229" }
 serde_derive = { version = "1.0.229" }
 thiserror = "2.0.20"
-toml = "0.8.23"
+toml = { version = "0.8.23" }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "ansi", "fmt"] }
 
