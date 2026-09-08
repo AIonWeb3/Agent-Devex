@@ -136,3 +136,27 @@ footer {
 .card h3 {
   margin-top: 0;
 }
+
+@media (max-width: 640px) {
+  .topnav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+  }
+
+  .hero,
+  main,
+  footer {
+    padding: 1.5rem 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
