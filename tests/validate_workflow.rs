@@ -1,6 +1,6 @@
+use agent_devex::Lang;
 use agent_devex::commands::validate::cmd_validate;
 use agent_devex::scaffold::write_project;
-use agent_devex::Lang;
 
 #[test]
 fn validate_accepts_fresh_python_project() {
