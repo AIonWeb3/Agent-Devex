@@ -102,4 +102,10 @@ mod tests {
         let sample = format!("Contract deployed:\n{id}");
         assert_eq!(parse_contract_id(&sample).as_deref(), Some(id.as_str()));
     }
+
+    #[test]
+    fn ignores_non_ids() {
+        assert_eq!(parse_contract_id("deploy failed"), None);
+        assert_eq!(parse_contract_id("CSHORT"), None);
+    }
 }
