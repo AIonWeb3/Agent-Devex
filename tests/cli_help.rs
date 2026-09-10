@@ -15,3 +15,15 @@ fn help_lists_init_and_compile() {
     assert!(stdout.contains("init"));
     assert!(stdout.contains("compile"));
 }
+
+#[test]
+fn help_lists_deploy_and_run() {
+    let output = cli()
+        .arg("--help")
+        .output()
+        .expect("run agent-devex --help");
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("deploy"));
+    assert!(stdout.contains("run"));
+}
