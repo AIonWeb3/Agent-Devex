@@ -12,6 +12,7 @@ pub fn cmd_deploy(project_dir: &Path, network: Option<&str>) -> Result<()> {
         .or(cfg.network)
         .unwrap_or_else(|| "testnet".to_string());
     validate_network_name(&network)?;
+    tracing::info!(%network, "selected deployment network");
     let contract_dir = paths::contract_crate_dir(project_dir);
     let manifest = paths::contract_manifest(project_dir);
     if !manifest.is_file() {
