@@ -121,10 +121,18 @@ fn init_tracing() {
         .init();
 }
 
-fn main() -> Result<()> {
+fn init_services() {
     agent_devex::panic::install_panic_handler();
     init_tracing();
     tracing::debug!("tracing initialized");
+    tracing::info!(
+        version = env!("CARGO_PKG_VERSION"),
+        "agent-devex runtime services ready"
+    );
+}
+
+fn main() -> Result<()> {
+    init_services();
     let cli = Cli::parse();
     load_dotenv_files(&cli);
     if let Some(cfg) = config::load_optional(Path::new("."))?
