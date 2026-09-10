@@ -131,8 +131,15 @@ fn init_services() {
     );
 }
 
-fn main() -> Result<()> {
+fn main() {
     init_services();
+    if let Err(err) = run() {
+        tracing::error!("{err:#}");
+        std::process::exit(1);
+    }
+}
+
+fn run() -> Result<()> {
     let cli = Cli::parse();
     load_dotenv_files(&cli);
     if let Some(cfg) = config::load_optional(Path::new("."))?
