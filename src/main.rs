@@ -13,7 +13,7 @@ use clap::{Parser, Subcommand};
 
 use agent_devex::Lang;
 use agent_devex::commands::{
-    compile::cmd_compile, deploy::cmd_deploy, doctor::cmd_doctor, init::cmd_init,
+    compile::cmd_compile, deploy::cmd_deploy, doctor::cmd_doctor, init::cmd_init, run::cmd_run,
     status::cmd_status, validate::cmd_validate,
 };
 use agent_devex::config;
@@ -136,7 +136,7 @@ fn main() -> Result<()> {
     match cli.command {
         Commands::Init { project_name, lang } => cmd_init(&project_name, lang),
         Commands::Compile { project_dir } => cmd_compile(&project_dir),
-        Commands::Run { .. } => Ok(()),
+        Commands::Run { project_dir, port } => cmd_run(&project_dir, port),
         Commands::Deploy {
             project_dir,
             network,
