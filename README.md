@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">⚡ Agent-Devex</h1>
+  <h1 align="center">Agent-Devex</h1>
   <p align="center">
     <strong>The Developer Experience toolkit for AI-to-Web3 integrations on Stellar</strong>
   </p>
@@ -25,7 +25,7 @@
 
 ---
 
-## 🎯 What is Agent-Devex?
+## What is Agent-Devex?
 
 Agent-Devex bridges the gap between **AI agents** and **blockchain actions**. It's a CLI that generates a complete project — a Soroban smart contract pre-wired with payment settlement and access control, plus an MCP server that lets any LLM submit signed transactions to Stellar.
 
@@ -50,23 +50,23 @@ You get a fully functional monorepo with a battle-tested smart contract and a re
 
 ---
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
-| **🏗️ Project Scaffolding** | Generate a complete monorepo with one command |
-| **📄 Smart Contract** | Soroban contract with AgentPay settlement + AgentGuard access control |
-| **🤖 MCP Server** | TypeScript, Python, or Rust MCP server for LLM integration |
-| **🚀 One-Click Deploy** | Build and deploy contracts to Stellar testnet/mainnet |
-| **✅ Project Validation** | Verify project structure and configuration health |
-| **🔍 Toolchain Doctor** | Diagnose missing dependencies and provide fix instructions |
-| **📊 Contract Status** | Query deployed contract state from the terminal |
-| **🎨 Interactive Mode** | Guided project setup with smart defaults |
-| **🔒 Security First** | Secrets handling, `.env` templates, access control patterns |
+| ** Project Scaffolding** | Generate a complete monorepo with one command |
+| ** Smart Contract** | Soroban contract with AgentPay settlement + AgentGuard access control |
+| ** MCP Server** | TypeScript, Python, or Rust MCP server for LLM integration |
+| ** One-Click Deploy** | Build and deploy contracts to Stellar testnet/mainnet |
+| ** Project Validation** | Verify project structure and configuration health |
+| ** Toolchain Doctor** | Diagnose missing dependencies and provide fix instructions |
+| ** Contract Status** | Query deployed contract state from the terminal |
+| ** Interactive Mode** | Guided project setup with smart defaults |
+| ** Security First** | Secrets handling, `.env` templates, access control patterns |
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -161,7 +161,7 @@ Point your MCP-capable client (Cursor, Claude Desktop, VS Code, etc.) at the std
 
 ---
 
-## 📋 Commands
+## Commands
 
 ### `init` — Scaffold a New Project
 
@@ -205,7 +205,7 @@ Queries the deployed contract for last action and payment totals.
 
 ---
 
-## 🏛️ Architecture
+## Architecture
 
 ### Smart Contract (Soroban)
 
@@ -252,7 +252,7 @@ Both TypeScript and Python servers expose one primary tool:
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### `agent-devex.toml`
 
@@ -273,7 +273,7 @@ description = "My AI×Web3 integration"
 
 ---
 
-## 📁 Repository Layout
+## Repository Layout
 
 | Path | Purpose |
 |------|---------|
@@ -292,7 +292,7 @@ description = "My AI×Web3 integration"
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
@@ -306,13 +306,13 @@ cargo fmt --all                    # Format
 
 ---
 
-## 📄 License
+## License
 
 MIT © [AIonWeb3](https://github.com/AIonWeb3)
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [x] CLI scaffolding (`init` + `deploy`)
 - [x] TypeScript and Python MCP server templates
@@ -326,7 +326,7 @@ MIT © [AIonWeb3](https://github.com/AIonWeb3)
 - [ ] Multi-contract project support
 - [ ] Audited mainnet deployment guides
 
-## 📚 More documentation
+## More documentation
 
 | Doc | Purpose |
 |-----|---------|
@@ -335,7 +335,7 @@ MIT © [AIonWeb3](https://github.com/AIonWeb3)
 | [docs/PITCH.md](docs/PITCH.md) | Problem / solution / buyers |
 | [dashboard/](dashboard/) | Visual pitch site |
 
-## ⚠️ Known limitations
+## Known limitations
 
 - AgentPay / AgentGuard in generated contracts are **local interfaces**, not a published protocol.
 - `deploy` requires `stellar-cli` and a funded account; without `STELLAR_ACCOUNT` it prints the command after build.
