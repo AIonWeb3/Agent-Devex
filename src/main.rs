@@ -47,6 +47,14 @@ enum Commands {
         #[arg(long, default_value = ".")]
         project_dir: PathBuf,
     },
+    /// Initialize a local MCP server (stub; does not bind a socket).
+    Run {
+        /// Listen port (defaults to agent.toml / 3000).
+        #[arg(long)]
+        port: Option<u16>,
+        #[arg(long, default_value = ".")]
+        project_dir: PathBuf,
+    },
     /// Compile the Soroban contract and deploy it to a Stellar network (testnet by default).
     Deploy {
         #[arg(long, default_value = ".")]
@@ -79,7 +87,8 @@ fn load_dotenv_files(cli: &Cli) {
         Commands::Deploy { project_dir, .. }
         | Commands::Validate { project_dir }
         | Commands::Status { project_dir, .. }
-        | Commands::Compile { project_dir } => Some(project_dir.as_path()),
+        | Commands::Compile { project_dir }
+        | Commands::Run { project_dir, .. } => Some(project_dir.as_path()),
         Commands::Init { .. } | Commands::Doctor => None,
     };
     if let Some(dir) = extra {
@@ -127,6 +136,7 @@ fn main() -> Result<()> {
     match cli.command {
         Commands::Init { project_name, lang } => cmd_init(&project_name, lang),
         Commands::Compile { project_dir } => cmd_compile(&project_dir),
+        Commands::Run { .. } => Ok(()),
         Commands::Deploy {
             project_dir,
             network,
