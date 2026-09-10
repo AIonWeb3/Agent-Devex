@@ -54,15 +54,15 @@ You get a fully functional monorepo with a battle-tested smart contract and a re
 
 | Feature | Description |
 |---------|-------------|
-| ** Project Scaffolding** | Generate a complete monorepo with one command |
-| ** Smart Contract** | Soroban contract with AgentPay settlement + AgentGuard access control |
-| ** MCP Server** | TypeScript, Python, or Rust MCP server for LLM integration |
-| ** One-Click Deploy** | Build and deploy contracts to Stellar testnet/mainnet |
-| ** Project Validation** | Verify project structure and configuration health |
-| ** Toolchain Doctor** | Diagnose missing dependencies and provide fix instructions |
-| ** Contract Status** | Query deployed contract state from the terminal |
-| ** Interactive Mode** | Guided project setup with smart defaults |
-| ** Security First** | Secrets handling, `.env` templates, access control patterns |
+| **Project Scaffolding** | Generate a complete monorepo with one command |
+| **Smart Contract** | Soroban contract with AgentPay settlement + AgentGuard access control |
+| **MCP Server** | TypeScript, Python, or Rust MCP server for LLM integration |
+| **One-Click Deploy** | Build and deploy contracts to Stellar testnet/mainnet |
+| **Project Validation** | Verify project structure and configuration health |
+| **Toolchain Doctor** | Diagnose missing dependencies and provide fix instructions |
+| **Contract Status** | Query deployed contract state from the terminal |
+| **Interactive Mode** | Guided project setup with smart defaults |
+| **Security First** | Secrets handling, `.env` templates, access control patterns |
 
 ---
 
