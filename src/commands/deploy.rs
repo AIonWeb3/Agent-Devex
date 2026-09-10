@@ -72,17 +72,12 @@ pub fn cmd_deploy(project_dir: &Path, network: Option<&str>) -> Result<()> {
 }
 
 fn validate_network_name(network: &str) -> Result<(), AgentDevexError> {
-    if network.is_empty()
-        || !network
-            .chars()
-            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
-    {
-        return Err(AgentDevexError::InvalidConfigValue {
-            key: "network".to_string(),
-            value: network.to_string(),
-        });
+    match network {
+        "testnet" | "mainnet" => Ok(()),
+        other => Err(AgentDevexError::InvalidNetwork {
+            network: other.to_string(),
+        }),
     }
-    Ok(())
 }
 
 fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
@@ -128,4 +123,24 @@ fn find_wasm(contract_dir: &Path) -> Result<PathBuf, AgentDevexError> {
             .unwrap_or(std::time::SystemTime::UNIX_EPOCH)
     });
     pool.pop().ok_or(AgentDevexError::WasmNotFound)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accepts_testnet_and_mainnet() {
+        validate_network_name("testnet").unwrap();
+        validate_network_name("mainnet").unwrap();
+    }
+
+    #[test]
+    fn rejects_unknown_networks() {
+        let err = validate_network_name("localnet").unwrap_err();
+        assert!(matches!(
+            err,
+            AgentDevexError::InvalidNetwork { network } if network == "localnet"
+        ));
+    }
 }
