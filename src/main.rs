@@ -51,7 +51,8 @@ enum Commands {
     Deploy {
         #[arg(long, default_value = ".")]
         project_dir: PathBuf,
-        #[arg(long)]
+        /// Target network (`testnet` or `mainnet`).
+        #[arg(long, value_name = "NETWORK")]
         network: Option<String>,
     },
     /// Check that a generated project has the expected contract and MCP layout.
