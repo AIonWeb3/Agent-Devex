@@ -34,7 +34,7 @@ jobs:
         run: cargo test --all
 
       - name: Verify Soroban template compiles
-        run: cargo test --manifest-path templates/soroban/Cargo.toml
+        run: cargo test --manifest-path templates/soroban/Cargo.toml --locked
 
   python-template:
     name: python MCP template
