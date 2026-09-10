@@ -9,5 +9,6 @@ use crate::config::AgentConfig;
 /// architecture for a later compile implementation.
 pub fn cmd_compile(project_dir: &Path) -> Result<()> {
     let _cfg = AgentConfig::load(project_dir)?;
+    tracing::info!("Compiling Soroban contracts...");
     Ok(())
 }
