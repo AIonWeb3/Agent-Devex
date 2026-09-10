@@ -1,3 +1,4 @@
+pub mod compile;
 pub mod deploy;
 pub mod doctor;
 pub mod init;
