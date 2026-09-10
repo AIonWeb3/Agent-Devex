@@ -36,3 +36,17 @@ pub fn write_file(path: &Path, contents: &str) -> Result<(), AgentDevexError> {
         source,
     })
 }
+
+/// Write bytes to `path`, creating parent directories as needed.
+pub fn write_bytes(path: &Path, contents: &[u8]) -> Result<(), AgentDevexError> {
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent).map_err(|source| AgentDevexError::IoError {
+            path: parent.to_path_buf(),
+            source,
+        })?;
+    }
+    fs::write(path, contents).map_err(|source| AgentDevexError::IoError {
+        path: path.to_path_buf(),
+        source,
+    })
+}

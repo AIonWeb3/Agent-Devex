@@ -11,8 +11,11 @@ pub const CONTRACTS_DIR: &str = "contracts";
 /// Crate name of the default AgentPay integration contract.
 pub const AGENT_PAY_CONTRACT: &str = "agent_pay_integration";
 
-/// Directory name for the generated MCP server.
+/// Directory name for the generated MCP server (legacy `agent/` layout).
 pub const AGENT_DIR: &str = "agent";
+
+/// Directory name for the extracted MCP backend (`python-mcp` or `node-mcp`).
+pub const SERVER_DIR: &str = "server";
 
 /// Root of the default contract crate: `<project>/contracts/agent_pay_integration`.
 pub fn contract_crate_dir(project_dir: &Path) -> PathBuf {
@@ -27,6 +30,11 @@ pub fn contract_manifest(project_dir: &Path) -> PathBuf {
 /// MCP agent directory: `<project>/agent`.
 pub fn agent_dir(project_dir: &Path) -> PathBuf {
     project_dir.join(AGENT_DIR)
+}
+
+/// Extracted MCP backend directory: `<project>/server`.
+pub fn server_dir(project_dir: &Path) -> PathBuf {
+    project_dir.join(SERVER_DIR)
 }
 
 /// Stellar WASM output root for a contract crate (`target/wasm32-unknown-unknown`).

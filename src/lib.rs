@@ -5,6 +5,7 @@
 
 pub mod commands;
 pub mod config;
+pub mod embed;
 pub mod errors;
 pub mod fsutil;
 pub mod names;

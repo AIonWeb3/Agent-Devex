@@ -89,6 +89,9 @@ pub enum AgentDevexError {
 
     #[error("validation failed: {0}")]
     ValidationFailed(String),
+
+    #[error("embedded template not found: {0}")]
+    TemplateMissing(String),
 }
 
 impl From<std::io::Error> for AgentDevexError {

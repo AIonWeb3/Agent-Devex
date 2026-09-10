@@ -42,9 +42,9 @@ fn resolve_lang(explicit: Option<Lang>) -> Result<Lang> {
     }
 
     if std::io::stdin().is_terminal() && std::io::stderr().is_terminal() {
-        let items = ["TypeScript (ts)", "Python (py)"];
+        let items = ["Node.js / TypeScript (ts)", "Python (py)"];
         let idx = dialoguer::Select::new()
-            .with_prompt("MCP server language")
+            .with_prompt("MCP backend")
             .items(&items)
             .default(0)
             .interact()?;

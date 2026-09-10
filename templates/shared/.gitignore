@@ -9,11 +9,14 @@ target/
 # Node
 node_modules/
 dist/
+coverage/
 
 # Python
 .venv/
 __pycache__/
 *.pyc
+.pytest_cache/
+.mypy_cache/
 
 # OS
 .DS_Store

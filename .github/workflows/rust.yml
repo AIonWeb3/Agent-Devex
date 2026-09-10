@@ -19,6 +19,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
 
       - name: cargo check
         run: cargo check --all-targets
@@ -29,5 +30,38 @@ jobs:
       - name: cargo clippy
         run: cargo clippy --all-targets -- -D warnings
 
-      - name: cargo test
+      - name: cargo test (includes rust-embed template lookup)
         run: cargo test --all
+
+      - name: Verify Soroban template compiles
+        run: cargo test --manifest-path templates/soroban/Cargo.toml
+
+  python-template:
+    name: python MCP template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Syntax and lint
+        run: |
+          python -m pip install flake8 black
+          python -m py_compile templates/python-mcp/main.py
+          flake8 templates/python-mcp --max-line-length=100 --extend-ignore=E501
+          black --check templates/python-mcp
+
+  node-template:
+    name: node MCP template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: tsc and eslint
+        working-directory: templates/node-mcp
+        run: |
+          npm install
+          npx tsc --noEmit
+          npx eslint src

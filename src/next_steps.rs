@@ -9,6 +9,7 @@ pub fn after_init(project_name: &str, lang: Lang) {
     match lang {
         Lang::Ts => {
             output::hint("  agent/                          TypeScript MCP server");
+            output::hint("  server/                         Node.js MCP backend");
             output::hint(format!(
                 "Next: cd {project_name} && agent-devex validate --project-dir ."
             ));
@@ -19,6 +20,7 @@ pub fn after_init(project_name: &str, lang: Lang) {
         }
         Lang::Py => {
             output::hint("  agent/                          Python MCP server");
+            output::hint("  server/                         Python MCP backend");
             output::hint(format!(
                 "Next: cd {project_name} && agent-devex validate --project-dir ."
             ));

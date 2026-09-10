@@ -23,14 +23,18 @@ pub fn cmd_validate(project_dir: &Path) -> Result<()> {
     }
 
     let agent = paths::agent_dir(project_dir);
-    let has_ts =
-        agent.join("package.json").is_file() && agent.join("src").join("index.ts").is_file();
-    let has_py =
-        agent.join("pyproject.toml").is_file() && agent.join("src").join("server.py").is_file();
+    let server = paths::server_dir(project_dir);
+    let has_ts = (agent.join("package.json").is_file()
+        && agent.join("src").join("index.ts").is_file())
+        || (server.join("package.json").is_file() && server.join("src").join("index.ts").is_file());
+    let has_py = (agent.join("pyproject.toml").is_file()
+        && agent.join("src").join("server.py").is_file())
+        || (server.join("requirements.txt").is_file() && server.join("main.py").is_file());
     if !has_ts && !has_py {
         issues.push(format!(
-            "missing MCP server under {} (expected TypeScript or Python layout)",
-            agent.display()
+            "missing MCP server under {} or {} (expected TypeScript or Python layout)",
+            agent.display(),
+            server.display()
         ));
     }
 

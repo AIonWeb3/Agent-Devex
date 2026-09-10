@@ -1,9 +1,8 @@
 //! Agent-Devex CLI: scaffold a Soroban + MCP monorepo and stub-deploy to Stellar testnet.
 //!
 //! File generation: templates live on disk under `templates/` and are compiled into the
-//! binary with [`include_str!`]. That keeps large MCP/Soroban sources editable as normal
-//! files instead of giant string literals in Rust. At `init` time we write those bytes
-//! (with `{{PROJECT_NAME}}` substitution) via [`agent_devex::scaffold`].
+//! binary with [`rust_embed`]. At `init` time we extract those bytes (with
+//! `{{PROJECT_NAME}}` substitution) via [`agent_devex::scaffold`].
 
 use std::io::IsTerminal;
 use std::path::{Path, PathBuf};
@@ -33,7 +32,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Create a monorepo: `contracts/` (Soroban + AgentPay) and `agent/` (MCP server).
+    /// Create a monorepo: `contracts/` (Soroban) and `server/` plus `agent/` (MCP).
     Init {
         /// Directory name for the generated project (`agent.toml` is written here).
         #[arg(value_name = "PROJECT_NAME")]
